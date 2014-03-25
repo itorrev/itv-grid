@@ -1,0 +1,36 @@
+.table-hover tbody tr:hover td
+{
+    background-color: #ddd;
+}
+.pagination, .headerStyle, .clickable
+{
+    cursor: pointer;
+}
+.clickable:hover
+{
+    background-color: #ddd;
+}
+.panel-footer
+{
+    background: transparent;
+}
+
+.leftFloater
+{
+    float: left;
+}
+
+.rightFloater
+{
+    float: right;
+}
+
+.clearBoth
+{
+    clear: both;
+}
+
+.options-btn
+{
+    margin-left: 20px;
+}

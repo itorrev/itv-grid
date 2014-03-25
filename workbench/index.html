@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>itvGridTest</title>
+    <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../vendor/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../src/styles/gridStyle.css">
+
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/underscore/underscore.js"></script>
+    <script src="../vendor/bootstrap/bootstrap.min.js"></script>
+    <script src="../vendor/angular/angular.min.js"></script>
+    <script src="../vendor/angular-bootstrap/ui-bootstrap.min.js"></script>
+    <script src="../vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+
+    <!-- build:js scripts/scripts.js -->
+    <script src="itvGridTestApp.js"></script>
+    <script src="../src/services/dataResource.js"></script>
+    <script src="../src/directives/panelHeaderDirective.js"></script>
+    <script src="../src/directives/panelBodyDirective.js"></script>
+    <script src="../src/directives/panelFooterDirective.js"></script>
+    <script src="../src/filters/paginationFilter.js"></script>
+
+</head>
+<body ng-app="itvGridTestApp" style="width: 80%; margin-left: 5em">
+<div ng-controller="itvGridTestCtrl">
+    <div style="margin: 3em">
+        <div class="panel panel-default">
+            <itv-Panelheader></itv-Panelheader>
+            <itv-Panelbody></itv-Panelbody>
+            <table class="table table-striped table-bordered table-condensed table-hover" ng-hide="isCollapsed">
+                <thead>
+                <tr>
+                    <th ng-repeat="header in headers" ng-click="setOrderBy(header.name)" class="headerStyle">
+                        {{ header.name }}
+                        <i ng-class="{'fa fa-sort-asc': orderBy.asc, 'fa fa-sort-desc': !orderBy.asc}" ng-show="orderBy.headerName == header.name" class="rightFloater"></i>
+                        <i class="fa fa-sort rightFloater" ng-show="orderBy.headerName != header.name"></i>
+                    </th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-show="insertMode">
+                    <td ng-repeat="header in headers">
+                        <div ng-show="header.isEditable"><input class="form-control" type="text" ng-model="insertRow[header.name]"></div>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-default btn-sm" ng-click="insertData()"><i class="fa fa-save fa-lg"></i></button>
+                            <button class="btn btn-default btn-sm" ng-click="setInsertMode()"><i class="fa fa-reply fa-lg"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-repeat="row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina">
+                    <td ng-repeat="header in headers">
+                        <div ng-show="row.editMode == null || row.editMode == false || !header.isEditable">{{ row[header.name] }}</div>
+                        <div ng-show="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="row[header.name]"></div>
+                    </td>
+                    <td>
+                        <div class="btn-group" ng-show="row.editMode == null || row.editMode == false">
+                            <button class="btn btn-default btn-sm" ng-click="deleteData(row)"><i class="fa fa-trash-o fa-lg"></i></button>
+                            <button class="btn btn-default btn-sm" ng-click="setRowEditable(row)"><i class="fa fa-edit fa-lg"></i></button>
+                        </div>
+                        <div class="btn-group" ng-show="row.editMode == true">
+                            <button class="btn btn-default btn-sm" ng-click="setRowEditable(row)"><i class="fa fa-reply fa-lg"></i></button>
+                            <button class="btn btn-default btn-sm" ng-click="updateData(row)" ng-show="row.editMode == true"><i class="fa fa-save fa-lg"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <itv-Panelfooter></itv-Panelfooter>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<div class="panel-footer" ng-hide="isCollapsed">
+    <div class="leftFloater">
+        Mostrando {{getItemsShown()}} objetos de {{filteredData.length}}
+    </div>
+    <div class="rightFloater">
+        <pagination boundary-links="true" total-items="itemsTotales" page="pagina" items-per-page="itemsPorPagina" class="pagination-sm" max-size="5" rotate="false"
+                    on-select-page="cambioPagina(page)" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+    </div>
+    <div class="clearBoth"></div>
+</div>
