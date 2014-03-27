@@ -1,11 +1,50 @@
 /**
- * Created by Aleksandr on 23/03/14.
+ * Created by Aleksandr on 26/03/14.
  */
 'use strict';
 
 var panelDirectivesModule = angular.module('panelDirectivesModule', ['ui.bootstrap', 'checkBoxListModule']);
 
-panelDirectivesModule.directive('itvPanelbody', ['$modal', function(){
+panelDirectivesModule.directive('itvPanelheader', function(){
+    return {
+        restrict: 'E',
+        templateUrl: '../src/templates/panelHeader.html',
+        replace: true,
+        link: function(scope){
+            scope.isCollapsed = false;
+
+            scope.collapse = function(){
+                scope.isCollapsed = !scope.isCollapsed;
+            };
+        }
+    }
+});
+
+panelDirectivesModule.directive('itvPanelfooter', function(){
+    return {
+        restrict: 'E',
+        templateUrl: '../src/templates/panelFooter.html',
+        replace: true,
+        link: function(scope){
+            scope.pagina = 1;
+
+            scope.cambioPagina = function(pagina){
+                console.log('invocado cambio de pagina: ' + pagina);
+                scope.pagina = pagina;
+            };
+
+            scope.getItemsShown = function(){
+                if(scope.filteredData){
+                    return scope.filteredData.length < scope.itemsPorPagina ? scope.filteredData.length : scope.itemsPorPagina;
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+});
+
+panelDirectivesModule.directive('itvPanelbody', ['$modal', function($modal){
     return {
         restrict: 'E',
         templateUrl: '../src/templates/panelBody.html',
@@ -44,7 +83,11 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', function(){
             };
 
             var HideColumnModalCtrl = function($scope, $modalInstance, headers, hiddenColumns){
-                $scope.headers = headers;
+                $scope.headerNames = [];
+                angular.forEach(headers, function(value, key){
+                    $scope.headerNames.push(value.name);
+                });
+
                 $scope.columnsToHide = hiddenColumns;
 
                 $scope.ok = function () {

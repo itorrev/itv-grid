@@ -99,6 +99,7 @@ dataResourceModule.provider('DataResource', function(){
         };
 
         DataResource.prototype.$save = function(){
+            $log.log('save instance function');
             return DataResource.save(this);
         };
 
@@ -111,6 +112,7 @@ dataResourceModule.provider('DataResource', function(){
         };
 
         DataResource.prototype.$remove = function(){
+            $log.log('remove instance function');
             return DataResource.remove(this);
         };
 

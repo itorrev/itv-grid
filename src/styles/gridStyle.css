@@ -34,3 +34,11 @@
 {
     margin-left: 20px;
 }
+
+.menuItem
+{
+    padding: 3px;
+    margin: 3px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}

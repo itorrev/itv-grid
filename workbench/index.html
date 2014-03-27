@@ -16,10 +16,9 @@
     <!-- build:js scripts/scripts.js -->
     <script src="itvGridTestApp.js"></script>
     <script src="../src/services/dataResource.js"></script>
-    <script src="../src/directives/panelHeaderDirective.js"></script>
-    <script src="../src/directives/panelBodyDirective.js"></script>
-    <script src="../src/directives/panelFooterDirective.js"></script>
+    <script src="../src/directives/panelDirectives.js"></script>
     <script src="../src/filters/paginationFilter.js"></script>
+    <script src="../src/directives/checkBoxListDirective.js"></script>
 
 </head>
 <body ng-app="itvGridTestApp" style="width: 80%; margin-left: 5em">
@@ -31,7 +30,7 @@
             <table class="table table-striped table-bordered table-condensed table-hover" ng-hide="isCollapsed">
                 <thead>
                 <tr>
-                    <th ng-repeat="header in headers" ng-click="setOrderBy(header.name)" class="headerStyle">
+                    <th ng-repeat="header in headers" ng-click="setOrderBy(header.name)" class="headerStyle" ng-hide="header.isHidden">
                         {{ header.name }}
                         <i ng-class="{'fa fa-sort-asc': orderBy.asc, 'fa fa-sort-desc': !orderBy.asc}" ng-show="orderBy.headerName == header.name" class="rightFloater"></i>
                         <i class="fa fa-sort rightFloater" ng-show="orderBy.headerName != header.name"></i>
@@ -41,7 +40,7 @@
                 </thead>
                 <tbody>
                 <tr ng-show="insertMode">
-                    <td ng-repeat="header in headers">
+                    <td ng-repeat="header in headers" ng-hide="header.isHidden">
                         <div ng-show="header.isEditable"><input class="form-control" type="text" ng-model="insertRow[header.name]"></div>
                     </td>
                     <td>
@@ -52,7 +51,7 @@
                     </td>
                 </tr>
                 <tr ng-repeat="row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina">
-                    <td ng-repeat="header in headers">
+                    <td ng-repeat="header in headers" ng-hide="header.isHidden">
                         <div ng-show="row.editMode == null || row.editMode == false || !header.isEditable">{{ row[header.name] }}</div>
                         <div ng-show="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="row[header.name]"></div>
                     </td>

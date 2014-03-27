@@ -1,12 +1,9 @@
 /**
- * Created by Aleksandr on 25/03/14.
- */
-/**
  * Created by Aleksandr on 10/03/14.
  */
 'use strict';
 
-var itvGridTestApp = angular.module('itvGridTestApp',['dataResourceModule', 'ui.bootstrap', 'panelDirectivesModule', 'paginationFilterModule']);
+var itvGridTestApp = angular.module('itvGridTestApp',['dataResourceModule', 'ui.bootstrap', 'panelDirectivesModule', 'paginationFilterModule', 'checkBoxListModule']);
 
 itvGridTestApp.config(function(DataResourceProvider){
     DataResourceProvider.setUrl('http://localhost:8080/itvRestServer/rest/personas');
@@ -18,11 +15,16 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
     $scope.itemsTotales = 0;
     $scope.orderBy = {headerName: '', asc: false};
     $scope.insertRow = {};
+    $scope.hiddenColumns = [];
 
     var createHeaders = function(headers){
         var classHeaders = [];
         angular.forEach(headers, function(value, key){
-            classHeaders.push({name: value, isEditable: !_.contains(DataResource.getNotEditableFields(), value)});
+            classHeaders.push({
+                name: value,
+                isEditable: !_.contains(DataResource.getNotEditableFields(), value),
+                isHidden: _.contains($scope.hiddenColumns, value)
+            });
         });
         return classHeaders;
     };
@@ -55,7 +57,7 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
     $scope.reloadData();
 
     $scope.deleteData = function(deletedResource){
-        $log.log('borrando id: ' + id );
+        $log.log('borrando id: ' + deletedResource.$id() );
         deletedResource.$remove().then(function(){
             $scope.reloadData();
         });
