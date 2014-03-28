@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var panelDirectivesModule = angular.module('panelDirectivesModule', ['ui.bootstrap', 'checkBoxListModule']);
+var panelDirectivesModule = angular.module('panelDirectivesModule', ['ui.bootstrap', 'checkBoxListModule', 'utilsServiceModule']);
 
 panelDirectivesModule.directive('itvPanelheader', function(){
     return {
@@ -44,7 +44,7 @@ panelDirectivesModule.directive('itvPanelfooter', function(){
     }
 });
 
-panelDirectivesModule.directive('itvPanelbody', ['$modal', function($modal){
+panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', function($modal, UtilsService){
     return {
         restrict: 'E',
         templateUrl: '../src/templates/panelBody.html',
@@ -54,12 +54,6 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', function($modal){
 
             scope.setInsertMode = function(){
                 scope.insertMode = !scope.insertMode;
-            };
-
-            var setHiddenColumns = function(){
-                angular.forEach(scope.headers, function(value, key){
-                    value.isHidden = _.contains(scope.hiddenColumns, value.name);
-                });
             };
 
             scope.openHideColumnModal = function(){
@@ -78,7 +72,7 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', function($modal){
 
                 hideColumnModal.result.then(function(columnsToHide){
                     scope.hiddenColumns = columnsToHide;
-                    setHiddenColumns();
+                    UtilsService.setHiddenColumns(scope.headers, columnsToHide);
                 });
             };
 

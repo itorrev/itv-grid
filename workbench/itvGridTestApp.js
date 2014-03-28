@@ -3,31 +3,19 @@
  */
 'use strict';
 
-var itvGridTestApp = angular.module('itvGridTestApp',['dataResourceModule', 'ui.bootstrap', 'panelDirectivesModule', 'paginationFilterModule', 'checkBoxListModule']);
+var itvGridTestApp = angular.module('itvGridTestApp',['dataResourceModule', 'ui.bootstrap', 'panelDirectivesModule', 'paginationFilterModule', 'checkBoxListModule', 'utilsServiceModule']);
 
 itvGridTestApp.config(function(DataResourceProvider){
     DataResourceProvider.setUrl('http://localhost:8080/itvRestServer/rest/personas');
 });
 
-itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log, filterFilter){
+itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log, UtilsService){
     $scope.title = 'Tabla';
     $scope.itemsPorPagina = 10;
     $scope.itemsTotales = 0;
     $scope.orderBy = {headerName: '', asc: false};
     $scope.insertRow = {};
     $scope.hiddenColumns = [];
-
-    var createHeaders = function(headers){
-        var classHeaders = [];
-        angular.forEach(headers, function(value, key){
-            classHeaders.push({
-                name: value,
-                isEditable: !_.contains(DataResource.getNotEditableFields(), value),
-                isHidden: _.contains($scope.hiddenColumns, value)
-            });
-        });
-        return classHeaders;
-    };
 
     $scope.setOrderBy = function(header){
         console.log('ordenando by ' + header);
@@ -37,7 +25,7 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
 
     $scope.$watch('searchFilter', function(filterText){
         if(!_.isUndefined($scope.filteredData)){
-            $scope.filteredData = filterText.length > 0 ? filterFilter($scope.data, filterText) : $scope.data;
+            $scope.filteredData = UtilsService.filterData(filterText, $scope.data);
             $scope.itemsTotales = $scope.filteredData.length;
         }
     });
@@ -47,8 +35,8 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
             console.log(data);
             $scope.data = data;
             $scope.filteredData = data;
-            $scope.headers = createHeaders(_.keys(data[0]));
-            $scope.itemsTotales = data.length;
+            $scope.headers = UtilsService.createHeaders(_.keys(data[0]), DataResource.getNotEditableFields(), $scope.hiddenColumns);
+            $scope.itemsTotales = $scope.filteredData.length;
             $scope.cambioPagina(1);
             $scope.searchFilter = '';
         });

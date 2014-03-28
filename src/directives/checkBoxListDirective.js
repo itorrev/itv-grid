@@ -8,14 +8,14 @@
 
 var cblm = angular.module('checkBoxListModule', []);
 
-cblm.directive('itvCheckboxlist', function(){
+cblm.directive('itvCheckboxlist', function($log){
     return {
         scope: {
             list: '=itvCheckboxlist',
             value: '@'
         },
         link: function(scope, elem, attrs){
-            console.log('iniciada directiva para el valor ' + attrs.value);
+            $log.log('iniciada directiva para el valor ' + attrs.value);
             var modelToView = function(){
                 var checked = elem.prop('checked');
                 var index = scope.list.indexOf(scope.value);
@@ -38,8 +38,8 @@ cblm.directive('itvCheckboxlist', function(){
 
             elem.bind('change', function(){
                 scope.$apply(viewToModel());
-                console.log('actualmente en la seleccion: ');
-                console.log(scope.list);
+                $log.log('actualmente en la seleccion: ');
+                $log.log(scope.list);
             });
             scope.$watch('list', modelToView, true);
         }
