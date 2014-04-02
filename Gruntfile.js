@@ -13,7 +13,7 @@ module.exports = function(grunt){
                     'angular-bootstrap/ui-bootstrap.min.js' : 'bower_components/angular-bootstrap/ui-bootstrap.min.js',
                     'angular-bootstrap/ui-bootstrap-tpls.min.js' : 'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
                     'bootstrap/bootstrap.min.js' : 'bower_components/bootstrap/dist/js/bootstrap.min.js',
-                    'bootstrap/bootstrap.min.css' : 'bower_components/bootstrap/dist/css/bootstrap.mindataResourceTestAppdataResourceTestApp.css',
+                    'bootstrap/bootstrap.min.css' : 'bower_components/bootstrap/dist/css/bootstrap.min.css',
                     'font-awesome/css/font-awesome.min.css': 'bower_components/font-awesome/css/font-awesome.min.css',
                     'font-awesome/fonts/FontAwesome.otf' : 'bower_components/font-awesome/fonts/FontAwesome.otf',
                     'font-awesome/fonts/fontawesome-webfont.eot' : 'bower_components/font-awesome/fonts/fontawesome-webfont.eot',
