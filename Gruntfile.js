@@ -10,6 +10,7 @@ module.exports = function(grunt){
                 },
                 files: {
                     'angular/angular.min.js' : 'bower_components/angular/angular.min.js',
+                    'angular-animate/angular-animate.min.js' : 'bower_components/angular-animate/angular-animate.min.js',
                     'angular-bootstrap/ui-bootstrap.min.js' : 'bower_components/angular-bootstrap/ui-bootstrap.min.js',
                     'angular-bootstrap/ui-bootstrap-tpls.min.js' : 'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
                     'bootstrap/bootstrap.min.js' : 'bower_components/bootstrap/dist/js/bootstrap.min.js',
