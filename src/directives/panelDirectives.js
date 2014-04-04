@@ -76,6 +76,26 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                 });
             };
 
+            scope.openAdvancedFilterModal = function(){
+                var advancedFilterModal = $modal.open({
+                    templateUrl: '../src/templates/advancedFilterModal.html',
+                    controller: AdvancedFilterModalCtrl,
+                    resolve: {
+                        headers: function(){
+                            return scope.headers;
+                        },
+                        hiddenColumns: function(){
+                            return scope.hiddenColumns;
+                        },
+                        advancedFilterObj: function(){
+                            return scope.advancedFilterObj;
+                        }
+                    }
+                });
+
+
+            };
+
             var HideColumnModalCtrl = function($scope, $modalInstance, headers, hiddenColumns){
                 $scope.headerNames = [];
                 angular.forEach(headers, function(value, key){
@@ -93,7 +113,12 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                 $scope.cancel = function () {
                     $modalInstance.dismiss('cancel');
                 };
-            }
+            };
+
+            var AdvancedFilterModalCtrl = function($scope, $modalInstance, headers, hiddenColumns, advancedFilterObj)
+            {
+
+            };
         }
     }
 }]);

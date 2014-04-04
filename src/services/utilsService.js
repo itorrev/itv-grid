@@ -34,5 +34,9 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
         });
     };
 
+    UtilsService.createAdvancedFilterObj = function(headers, hiddenColumns){
+
+    }
+
     return UtilsService;
 });
