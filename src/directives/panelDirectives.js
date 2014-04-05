@@ -30,6 +30,7 @@ panelDirectivesModule.directive('itvPanelfooter', function(){
 
             scope.cambioPagina = function(pagina){
                 console.log('invocado cambio de pagina: ' + pagina);
+                scope.clearEditMode();
                 scope.pagina = pagina;
             };
 
@@ -53,10 +54,13 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
             scope.insertMode = false;
 
             scope.setInsertMode = function(){
+                scope.clearEditMode();
                 scope.insertMode = !scope.insertMode;
             };
 
             scope.openHideColumnModal = function(){
+                scope.clearEditMode();
+
                 var hideColumnModal = $modal.open({
                     templateUrl: '../src/templates/hideColumnModal.html',
                     controller: HideColumnModalCtrl,
@@ -77,6 +81,8 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
             };
 
             scope.openAdvancedFilterModal = function(){
+                scope.clearEditMode(scope.originalEditingRow, scope.copiedEditingRow);
+
                 var advancedFilterModal = $modal.open({
                     templateUrl: '../src/templates/advancedFilterModal.html',
                     controller: AdvancedFilterModalCtrl,

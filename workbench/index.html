@@ -55,7 +55,7 @@
                 <tr ng-repeat="row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina">
                     <td ng-repeat="header in headers" ng-hide="header.isHidden">
                         <div ng-show="row.editMode == null || row.editMode == false || !header.isEditable">{{ row[header.name] }}</div>
-                        <div ng-show="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="row[header.name]"></div>
+                        <div ng-show="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="copiedEditingRow[header.name]"></div>
                     </td>
                     <td>
                         <div class="btn-group" ng-show="row.editMode == null || row.editMode == false">
@@ -64,7 +64,7 @@
                         </div>
                         <div class="btn-group" ng-show="row.editMode == true">
                             <button class="btn btn-default btn-sm" ng-click="setRowEditable(row)"><i class="fa fa-reply fa-lg"></i></button>
-                            <button class="btn btn-default btn-sm" ng-click="updateData(row)" ng-show="row.editMode == true"><i class="fa fa-save fa-lg"></i></button>
+                            <button class="btn btn-default btn-sm" ng-click="updateData(copiedEditingRow)" ng-show="row.editMode == true"><i class="fa fa-save fa-lg"></i></button>
                         </div>
                     </td>
                 </tr>

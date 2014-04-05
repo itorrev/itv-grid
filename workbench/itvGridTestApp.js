@@ -15,15 +15,19 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
     $scope.itemsTotales = 0;
     $scope.orderBy = {headerName: '', asc: false};
     $scope.insertRow = {};
+    $scope.originalEditingRow = {};
+    $scope.copiedEditingRow = {};
     $scope.hiddenColumns = [];
 
     $scope.setOrderBy = function(header){
         console.log('ordenando by ' + header);
+        $scope.clearEditMode();
         $scope.orderBy.asc = $scope.orderBy.headerName === header ? !$scope.orderBy.asc : true;
         $scope.orderBy.headerName = header;
     };
 
     $scope.$watch('searchFilter', function(filterText){
+        $scope.clearEditMode();
         if(!_.isUndefined($scope.filteredData)){
             $scope.filteredData = UtilsService.filterData(filterText, $scope.data);
             $scope.itemsTotales = $scope.filteredData.length;
@@ -31,6 +35,7 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
     });
 
     $scope.reloadData = function(){
+        $scope.clearEditMode();
         DataResource.query().then(function(data){
             console.log(data);
             $scope.data = data;
@@ -41,8 +46,6 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
             $scope.searchFilter = '';
         });
     };
-
-    $scope.reloadData();
 
     $scope.deleteData = function(deletedResource){
         $log.log('borrando id: ' + deletedResource.$id() );
@@ -67,10 +70,29 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
     };
 
     $scope.setRowEditable = function(editedResource){
-        editedResource.editMode = !editedResource.editMode;
+        if(editedResource === $scope.originalEditingRow){
+            console.log('es igual');
+            $scope.clearEditMode();
+        } else {
+            console.log('NO es igual');
+            $scope.clearEditMode();
+            editedResource.editMode = !editedResource.editMode;
+            $scope.originalEditingRow = editedResource;
+            angular.copy(editedResource, $scope.copiedEditingRow);
+        }
     };
 
     $scope.checkDisabledField = function(fieldName){
         return _.contains(DataResource.getNotEditableFields(), fieldName);
     };
+
+    $scope.clearEditMode = function(){
+        if(!_.isEmpty($scope.originalEditingRow)){
+            $scope.originalEditingRow.editMode = false;
+            $scope.originalEditingRow = {};
+            $scope.copiedEditingRow = {};
+        }
+    };
+
+    $scope.reloadData();
 });
