@@ -81,7 +81,7 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
             };
 
             scope.openAdvancedFilterModal = function(){
-                scope.clearEditMode(scope.originalEditingRow, scope.copiedEditingRow);
+                scope.clearEditMode();
 
                 var advancedFilterModal = $modal.open({
                     templateUrl: '../src/templates/advancedFilterModal.html',
@@ -90,16 +90,19 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                         headers: function(){
                             return scope.headers;
                         },
-                        hiddenColumns: function(){
-                            return scope.hiddenColumns;
-                        },
                         advancedFilterObj: function(){
                             return scope.advancedFilterObj;
                         }
                     }
                 });
 
-
+                advancedFilterModal.result.then(function(advancedFilterObj){
+                    scope.advancedFilterObj = advancedFilterObj;
+                    scope.searchFilter = '';
+                    scope.filteredData = UtilsService.filterData(advancedFilterObj, scope.data);
+                    scope.itemsTotales = scope.filteredData.length;
+                    scope.advancedFilterActive = true;
+                });
             };
 
             var HideColumnModalCtrl = function($scope, $modalInstance, headers, hiddenColumns){
@@ -121,9 +124,23 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                 };
             };
 
-            var AdvancedFilterModalCtrl = function($scope, $modalInstance, headers, hiddenColumns, advancedFilterObj)
+            var AdvancedFilterModalCtrl = function($scope, $modalInstance, headers, advancedFilterObj)
             {
+                $scope.advancedFilterObj = UtilsService.createAdvancedFilterObj(headers, advancedFilterObj);
+                $scope.headerNames = [];
+                angular.forEach(headers, function(value, key){
+                    if(!value.isHidden){
+                        $scope.headerNames.push(value.name);
+                    }
+                });
 
+                $scope.ok = function () {
+                    $modalInstance.close($scope.advancedFilterObj);
+                };
+
+                $scope.cancel = function () {
+                    $modalInstance.dismiss('cancel');
+                };
             };
         }
     }

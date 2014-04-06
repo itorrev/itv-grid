@@ -18,6 +18,8 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
     $scope.originalEditingRow = {};
     $scope.copiedEditingRow = {};
     $scope.hiddenColumns = [];
+    $scope.advancedFilterActive = false;
+    $scope.advancedFilterObj = {};
 
     $scope.setOrderBy = function(header){
         console.log('ordenando by ' + header);
@@ -71,10 +73,8 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
 
     $scope.setRowEditable = function(editedResource){
         if(editedResource === $scope.originalEditingRow){
-            console.log('es igual');
             $scope.clearEditMode();
         } else {
-            console.log('NO es igual');
             $scope.clearEditMode();
             editedResource.editMode = !editedResource.editMode;
             $scope.originalEditingRow = editedResource;

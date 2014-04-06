@@ -34,9 +34,15 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
         });
     };
 
-    UtilsService.createAdvancedFilterObj = function(headers, hiddenColumns){
-
-    }
+    UtilsService.createAdvancedFilterObj = function(headers, advancedFilterObj){
+        var newAdvancedFilter = {};
+        angular.forEach(headers, function(value, key){
+            if(!value.isHidden){
+                newAdvancedFilter[value.name] = '' || advancedFilterObj[value.name];
+            }
+        });
+        return newAdvancedFilter;
+    };
 
     return UtilsService;
 });
