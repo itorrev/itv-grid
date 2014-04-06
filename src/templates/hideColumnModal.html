@@ -7,7 +7,7 @@
             <ul>
                 <li ng-repeat="name in headerNames">
                     <div class="checkbox">
-                        <label><input type="checkbox" value="{{name}}" itv-checkboxlist="columnsToHide"> {{ name }}</label>
+                        <label><input type="checkbox" value="{{name}}" itv-checkboxlist="columnsToHide"> {{ name | capitalize}}</label>
 
                     </div>
 

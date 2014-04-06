@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var itvGridTestApp = angular.module('itvGridTestApp',['dataResourceModule', 'ui.bootstrap', 'panelDirectivesModule', 'paginationFilterModule', 'checkBoxListModule', 'utilsServiceModule']);
+var itvGridTestApp = angular.module('itvGridTestApp',['dataResourceModule', 'ui.bootstrap', 'panelDirectivesModule', 'itvFiltersModule', 'checkBoxListModule', 'utilsServiceModule']);
 
 itvGridTestApp.config(function(DataResourceProvider){
     DataResourceProvider.setUrl('http://localhost:8080/itvRestServer/rest/personas');
