@@ -102,7 +102,7 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
         if($scope.advancedFilterActive){
             $scope.advancedFilterObj = UtilsService.createAdvancedFilterObj($scope.headers, $scope.advancedFilterObj);
             $scope.filteredData = UtilsService.filterData($scope.advancedFilterObj, $scope.data);
-        } else if(angular.isString($scope.searchFilter) && !angular.isEmpty($scope.searchFilter)){
+        } else if(angular.isString($scope.searchFilter) && $scope.searchFilter){
             var customFilterFunction = UtilsService.createCustomFilterFunction($scope.searchFilter, $scope.headers);
             $scope.filteredData = UtilsService.filterData(customFilterFunction, $scope.data);
         }

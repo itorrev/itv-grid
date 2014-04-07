@@ -77,7 +77,8 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                 hideColumnModal.result.then(function(columnsToHide){
                     // si la selección de columnas a ocultar ha cambiado se deber comprobar si existe un filtro
                     // de búsqueda activo y volverlo a lanzar
-                    var columnsChange = (_.difference(scope.hiddenColumns, columnsToHide).length > 0);
+                    var columnsChange = (scope.hiddenColumns.length != columnsToHide.length ?
+                        true : _.difference(scope.hiddenColumns, columnsToHide).length > 0);
                     scope.hiddenColumns = columnsToHide;
                     UtilsService.setHiddenColumns(scope.headers, columnsToHide);
                     if(columnsChange){
@@ -117,7 +118,8 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                     $scope.headerNames.push(value.name);
                 });
 
-                $scope.columnsToHide = hiddenColumns;
+                $scope.columnsToHide = [];
+                angular.extend($scope.columnsToHide, hiddenColumns);
 
                 $scope.ok = function () {
                     console.log('seleccionadas columnas:');
