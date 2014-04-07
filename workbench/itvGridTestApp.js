@@ -31,8 +31,11 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
     $scope.$watch('searchFilter', function(filterText){
         $scope.clearEditMode();
         if(!angular.isUndefined($scope.filteredData) && !angular.isUndefined($scope.headers)){
-            var customFilterFunction = UtilsService.createCustomFilterFunction(filterText, $scope.headers);
-            $scope.filteredData = UtilsService.filterData(customFilterFunction, $scope.data);
+            var filterParams = filterText;
+            if(filterParams){
+                filterParams = UtilsService.createCustomFilterFunction(filterText, $scope.headers);
+            }
+            $scope.filteredData = UtilsService.filterData(filterParams, $scope.data);
             $scope.itemsTotales = $scope.filteredData.length;
         }
     });

@@ -52,10 +52,11 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
     UtilsService.createCustomFilterFunction = function(filterText, headers){
         return function(obj){
             var text = ('' + filterText).toLowerCase();
-            for (var header in headers){
-                if ((!header.isHidden)
-                    && (obj.hasOwnProperty(header.name))
-                    && (obj[header.name].toLowerCase().indexOf(text) > -1)) {
+            for (var i in headers){
+                var property = (headers[i]).name;
+                if ((!(headers[i]).isHidden)
+                    && (obj.hasOwnProperty(property)
+                    && ('' + obj[property]).toLowerCase().indexOf(text) > -1)) {
                     return true;
                 }
             }
