@@ -19,9 +19,11 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
     };
 
     UtilsService.filterData = function(filterParams, scopedData){
-        if(_.isString(filterParams)){
+        if(angular.isString(filterParams)){
             return filterParams.length > 0 ? filterFilter(scopedData, filterParams) : scopedData;
-        } else if(!_.isEmpty(filterParams)){
+        } else if(angular.isFunction(filterParams)){
+            return filterFilter(scopedData, filterParams);
+        } else if(angular.isObject(filterParams) && !_.isEmpty(filterParams)){
             return filterFilter(scopedData, filterParams);
         } else {
             return scopedData;
@@ -42,6 +44,23 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
             }
         });
         return newAdvancedFilter;
+    };
+
+    // método para crear una función a medida para su uso en el filtro "filter" de AngularJS
+    // al no existir documentación al respecto he tenido que buscar su implementación en el código fuente para
+    // averiguar cómo utilizar el filtro para que no aplique a las columnas no visibles
+    UtilsService.createCustomFilterFunction = function(filterText, headers){
+        return function(obj){
+            var text = ('' + filterText).toLowerCase();
+            for (var header in headers){
+                if ((!header.isHidden)
+                    && (obj.hasOwnProperty(header.name))
+                    && (obj[header.name].toLowerCase().indexOf(text) > -1)) {
+                    return true;
+                }
+            }
+            return false;
+        };
     };
 
     return UtilsService;

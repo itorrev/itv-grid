@@ -30,8 +30,9 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
 
     $scope.$watch('searchFilter', function(filterText){
         $scope.clearEditMode();
-        if(!_.isUndefined($scope.filteredData)){
-            $scope.filteredData = UtilsService.filterData(filterText, $scope.data);
+        if(!angular.isUndefined($scope.filteredData) && !angular.isUndefined($scope.headers)){
+            var customFilterFunction = UtilsService.createCustomFilterFunction(filterText, $scope.headers);
+            $scope.filteredData = UtilsService.filterData(customFilterFunction, $scope.data);
             $scope.itemsTotales = $scope.filteredData.length;
         }
     });
@@ -92,6 +93,17 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
             $scope.originalEditingRow = {};
             $scope.copiedEditingRow = {};
         }
+    };
+
+    $scope.reloadFilter = function(){
+        if($scope.advancedFilterActive){
+            $scope.advancedFilterObj = UtilsService.createAdvancedFilterObj($scope.headers, $scope.advancedFilterObj);
+            $scope.filteredData = UtilsService.filterData($scope.advancedFilterObj, $scope.data);
+        } else if(angular.isString($scope.searchFilter) && !angular.isEmpty($scope.searchFilter)){
+            var customFilterFunction = UtilsService.createCustomFilterFunction($scope.searchFilter, $scope.headers);
+            $scope.filteredData = UtilsService.filterData(customFilterFunction, $scope.data);
+        }
+        $scope.itemsTotales = $scope.filteredData.length;
     };
 
     $scope.reloadData();

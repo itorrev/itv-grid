@@ -75,8 +75,14 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                 });
 
                 hideColumnModal.result.then(function(columnsToHide){
+                    // si la selección de columnas a ocultar ha cambiado se deber comprobar si existe un filtro
+                    // de búsqueda activo y volverlo a lanzar
+                    var columnsChange = (_.difference(scope.hiddenColumns, columnsToHide).length > 0);
                     scope.hiddenColumns = columnsToHide;
                     UtilsService.setHiddenColumns(scope.headers, columnsToHide);
+                    if(columnsChange){
+                        scope.reloadFilter();
+                    }
                 });
             };
 
