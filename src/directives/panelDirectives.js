@@ -104,10 +104,10 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
 
                 advancedFilterModal.result.then(function(advancedFilterObj){
                     scope.advancedFilterObj = advancedFilterObj;
+                    scope.advancedFilterActive = true;
                     scope.searchFilter = '';
                     scope.filteredData = UtilsService.filterData(advancedFilterObj, scope.data);
                     scope.itemsTotales = scope.filteredData.length;
-                    scope.advancedFilterActive = true;
                 });
             };
 

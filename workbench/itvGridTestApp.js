@@ -30,7 +30,7 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
 
     $scope.$watch('searchFilter', function(filterText){
         $scope.clearEditMode();
-        if(!angular.isUndefined($scope.filteredData) && !angular.isUndefined($scope.headers)){
+        if(!$scope.advancedFilterActive && !angular.isUndefined($scope.filteredData)){
             var filterParams = filterText;
             if(filterParams){
                 filterParams = UtilsService.createCustomFilterFunction(filterText, $scope.headers);
