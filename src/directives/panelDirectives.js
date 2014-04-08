@@ -118,6 +118,7 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                     scope.advancedFilterObj = advancedFilterObj;
                     scope.advancedFilterActive = true;
                     scope.searchFilter = '';
+                    scope.genericSearchFilter = '';
                     scope.filteredData = UtilsService.filterData(advancedFilterObj, scope.data);
                     scope.itemsTotales = scope.filteredData.length;
                 });
