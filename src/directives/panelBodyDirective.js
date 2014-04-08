@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var panelDirectivesModule = angular.module('panelDirectivesModule', ['ui.bootstrap', 'checkBoxListModule']);
+var panelDirectivesModule = angular.module('panelDirectivesModule', ['ui.bootstrap', 'itvUtilDirectivesModule']);
 
 panelDirectivesModule.directive('itvPanelbody', ['$modal', function(){
     return {
