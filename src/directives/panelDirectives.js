@@ -58,6 +58,17 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                 scope.insertMode = !scope.insertMode;
             };
 
+            scope.clearAdvancedFilter = function(){
+                scope.advancedFilterActive = false;
+                scope.advancedFilterObj = {};
+                scope.filteredData = scope.data;
+                scope.itemsTotales = scope.filteredData.length;
+            };
+
+            scope.doGenericFilter = function(){
+                scope.searchFilter = scope.genericSearchFilter ? scope.genericSearchFilter : '';
+            };
+
             scope.openHideColumnModal = function(){
                 scope.clearEditMode();
 

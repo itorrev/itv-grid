@@ -51,6 +51,7 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
             $scope.itemsTotales = $scope.filteredData.length;
             $scope.cambioPagina(1);
             $scope.searchFilter = '';
+            $scope.genericSearchFilter = '';
         });
     };
 
