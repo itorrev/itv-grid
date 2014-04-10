@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var itvUtilDirectivesModule = angular.module('itvUtilDirectivesModule', []);
+var itvUtilDirectivesModule = angular.module('itvUtilDirectivesModule', ['itvMessagesModule']);
 
 /**
  * Directiva para manejar un grupo de checkboxes y convertir la selección en un array de valores
@@ -76,4 +76,22 @@ itvUtilDirectivesModule.directive('itvBlur', function(){
             });
         });
     };
+});
+
+/**
+ * Directiva para mostrar mensaje a partir de una clave
+ *
+ */
+itvUtilDirectivesModule.directive('itvMessage', function($interpolate, itvMessages){
+    return {
+        restrict: 'A',
+        scope: true,
+        link: function(scope, elem, attrs){
+            if(attrs.itvMessage){
+                scope.literal = itvMessages[attrs.itvMessage] || attrs.itvMessage;
+                scope.value = $interpolate(scope.literal)(scope.$parent);
+                elem.html(scope.value);
+            }
+        }
+    }
 });

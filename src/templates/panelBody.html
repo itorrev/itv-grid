@@ -1,7 +1,7 @@
 <div class="panel-body" ng-hide="isCollapsed">
     <form class="form-inline" role="form">
         <div class="form-group" tooltip="{{ advancedFilterActive ? 'panelbody.search.tooltip' : '' | messageFilter }}">
-            <label for="buscar">Buscar:</label>
+            <label for="buscar" itv-message="panelbody.search.label"></label>
             <input class="form-control" type="text" id="buscar" ng-model="genericSearchFilter"
                    ng-disabled="advancedFilterActive" itv-enterkey="doGenericFilter()" itv-blur="doGenericFilter()">
         </div>
