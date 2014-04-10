@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var itvFiltersModule = angular.module('itvFiltersModule', []);
+var itvFiltersModule = angular.module('itvFiltersModule', ['itvMessagesModule']);
 
 itvFiltersModule.filter('paginationFilter', function(){
     return function(input, pagina, itemsPorPagina){
@@ -19,8 +19,20 @@ itvFiltersModule.filter('paginationFilter', function(){
 
 itvFiltersModule.filter('capitalize', function(){
     return function(input) {
-        if (input != null){
+        if (!angular.isString(input) || !input){
+            return input;
+        } else {
             return input.substring(0,1).toUpperCase()+input.substring(1);
+        }
+    }
+});
+
+itvFiltersModule.filter('messageFilter', function(itvMessages){
+    return function(key){
+        if(!angular.isString(key) || !key){
+            return key;
+        } else {
+            return itvMessages[key] || key;
         }
     }
 });

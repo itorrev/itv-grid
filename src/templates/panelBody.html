@@ -1,6 +1,6 @@
 <div class="panel-body" ng-hide="isCollapsed">
     <form class="form-inline" role="form">
-        <div class="form-group" tooltip="{{ advancedFilterActive ? 'Filtro por columna activado' : '' }}">
+        <div class="form-group" tooltip="{{ advancedFilterActive ? 'panelbody.search.tooltip' : '' | messageFilter }}">
             <label for="buscar">Buscar:</label>
             <input class="form-control" type="text" id="buscar" ng-model="genericSearchFilter"
                    ng-disabled="advancedFilterActive" itv-enterkey="doGenericFilter()" itv-blur="doGenericFilter()">
@@ -19,9 +19,9 @@
                 <i class="fa fa-sort-down"></i>
             </button>
             <ul class="dropdown-menu">
-                <li class="clickable menuItem" ng-click="setInsertMode()"><i class="fa fa-plus fa-lg"></i> Nuevo Registro</li>
-                <li class="clickable menuItem" ng-click="openHideColumnModal()"><i class="fa fa-columns fa-lg"></i> Ocultar Columnas</li>
-                <li class="clickable menuItem" ng-click="openAdvancedFilterModal()"><i class="fa fa-filter fa-lg"></i> Filtrar Columnas</li>
+                <li class="clickable menuItem" ng-click="setInsertMode()"><i class="fa fa-plus fa-lg"></i> <span>Nuevo Registro</span></li>
+                <li class="clickable menuItem" ng-click="openHideColumnModal()"><i class="fa fa-columns fa-lg"></i> <span>Ocultar Columnas</span></li>
+                <li class="clickable menuItem" ng-click="openAdvancedFilterModal()"><i class="fa fa-filter fa-lg"></i> <span>Filtrar Columnas</span></li>
             </ul>
         </div>
         <div class="form-group rightFloater">
