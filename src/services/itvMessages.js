@@ -6,12 +6,12 @@
 var itvMessagesModule = angular.module('itvMessagesModule', []);
 
 itvMessagesModule.value('itvMessages', {
-    'panelbody.search.label': 'Buscar:',
+    'panelbody.search.label': 'Buscar: ',
     'panelbody.search.tooltip': 'Filtro por columna activado',
     'panelbody.menu.add': 'Nuevo Registro',
     'panelbody.menu.hidecolumns': 'Ocultar Columnas',
     'panelbody.menu.filtercolumns': 'Filtrar Columnas',
-    'panelbody.page.items': 'Filas por p&aacute;gina:',
+    'panelbody.page.items': 'Filas por p&aacute;gina: ',
     'panelbody.search.btn.tooltip': 'Buscar en todas las columnas',
     'panelbody.remove.btn.tooltip': 'Eliminar filtro por columna',
     'panelbody.options.btn.tooltip': 'Opciones',
