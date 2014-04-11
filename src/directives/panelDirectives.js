@@ -94,6 +94,7 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                     UtilsService.setHiddenColumns(scope.headers, columnsToHide);
                     if(columnsChange){
                         scope.reloadFilter();
+                        scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
                     }
                 });
             };
@@ -121,6 +122,7 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
                     scope.genericSearchFilter = '';
                     scope.filteredData = UtilsService.filterData(advancedFilterObj, scope.data);
                     scope.itemsTotales = scope.filteredData.length;
+                    scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
                 });
             };
 

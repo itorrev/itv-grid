@@ -38,6 +38,7 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
             }
             $scope.filteredData = UtilsService.filterData(filterParams, $scope.data);
             $scope.itemsTotales = $scope.filteredData.length;
+            $scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject($scope.pagina , $scope.itemsTotales, $scope.itemsPorPagina);
         }
     });
 
@@ -52,6 +53,7 @@ itvGridTestApp.controller('itvGridTestCtrl', function($scope, DataResource, $log
             $scope.cambioPagina(1);
             $scope.searchFilter = '';
             $scope.genericSearchFilter = '';
+            $scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject($scope.pagina , $scope.itemsTotales, $scope.itemsPorPagina);
         });
     };
 

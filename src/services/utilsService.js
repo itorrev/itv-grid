@@ -64,5 +64,26 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
         };
     };
 
+    /**
+     * Crea un objeto con los índices de los elementos mostrados inicial y final así como los elementos totales
+     * @param currentPage Número de página actual
+     * @param totalItems Total de elementos mostrados
+     * @param itemsPerPage Elementos mostrados en cada página
+     * @returns {{initIndex: number, endIndex: *, totalItems: *}}
+     */
+    UtilsService.getFirstLastTotalObject = function(currentPage, totalItems, itemsPerPage){
+        var initIndex = ((currentPage - 1) * itemsPerPage) + 1;
+        var endIndex = initIndex - 1 + itemsPerPage;
+        if(endIndex > totalItems){
+            endIndex = totalItems;
+        }
+
+        return {
+            'initIndex': initIndex,
+            'endIndex': endIndex,
+            'totalItems': totalItems
+        }
+    };
+
     return UtilsService;
 });
