@@ -1,9 +1,14 @@
 <div class="panel-body" ng-hide="isCollapsed">
     <form class="form-inline" role="form">
-        <div class="form-group" itv-tooltipfade tooltip="{{ advancedFilterActive ? 'panelbody.search.tooltip' : '' | messageFilter }}">
+        <div class="form-group" ng-hide="advancedFilterActive">
             <label for="buscar" itv-message="panelbody.search.label"></label>
             <input class="form-control" type="text" id="buscar" ng-model="genericSearchFilter"
                    ng-disabled="advancedFilterActive" itv-enterkey="doGenericFilter()" itv-blur="doGenericFilter()">
+        </div>
+        <div class="form-group" tooltip="{{'panelbody.search.tooltip' | messageFilter }}"
+             itv-tooltipfade ng-show="advancedFilterActive">
+            <label for="buscardisabled" itv-message="panelbody.search.label"></label>
+            <input class="form-control" type="text" id="buscardisabled" ng-disabled="advancedFilterActive">
         </div>
         <div class="form-group">
             <button class="btn btn-default btn-sm form-control" ng-hide="advancedFilterActive" itv-tooltipfade
