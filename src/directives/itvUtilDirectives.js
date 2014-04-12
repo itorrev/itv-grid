@@ -95,3 +95,22 @@ itvUtilDirectivesModule.directive('itvMessage', function($interpolate, itvMessag
         }
     }
 });
+
+/***
+ * Directiva para hacer desaparecer el tooltip de Angular Bootstrap UI
+ * Dado que no hay api para el acceso programático se utiliza un 'hack'
+ * que consiste en modificar una propiedad expuesta por el propio bootstrap
+ * para realizar la ocultación tras un timeout definido.
+ * La directiva permite su uso con un valor de ms como parámetro para
+ * definir el tiempo que tarda el tooltip en desaparecer
+ */
+itvUtilDirectivesModule.directive('itvTooltipfade', function($timeout){
+    return function(scope, elem, attrs){
+        elem.bind('mouseenter', function(){
+            var timeout = attrs.itvTooltipfade || 2000;
+            $timeout(function(){
+                scope.tt_isOpen = false;
+            }, timeout);
+        });
+    }
+});
