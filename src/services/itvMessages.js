@@ -21,8 +21,8 @@ itvMessagesModule.value('itvMessages', {
     'modal.btn.ok': 'Aceptar',
     'modal.btn.cancel': 'Cancelar',
     'modal.btn.filter': 'Filtrar',
-    'action.btn.delete.tooltip': 'Borrar registro',
-    'action.btn.edit.tooltip': 'Editar registro',
+    'action.btn.delete.tooltip': 'Borrar elemento',
+    'action.btn.edit.tooltip': 'Editar elemento',
     'action.btn.undo.tooltip': 'Deshacer',
     'action.btn.save.tooltip': 'Guardar',
     'action.btn.clearedit.tooltip': 'Quitar edici&oacute;n'
