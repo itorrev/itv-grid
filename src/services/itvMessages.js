@@ -15,7 +15,7 @@ itvMessagesModule.value('itvMessages', {
     'panelbody.search.btn.tooltip': 'Buscar en todas las columnas',
     'panelbody.remove.btn.tooltip': 'Eliminar filtro por columna',
     'panelbody.options.btn.tooltip': 'Opciones',
-    'panelfooter.number.items': 'Mostrando {{getItemsShown()}} objetos de {{filteredData.length}}',
+    'panelfooter.number.items': 'Mostrando {{ firstLastTotalObj.initIndex }} - {{ firstLastTotalObj.endIndex }} de {{ firstLastTotalObj.totalItems }} elementos',
     'modal.hidecolumns.label': 'Seleccionar columnas a ocultar',
     'modal.filter.label': 'Filtrar por campos',
     'modal.btn.ok': 'Aceptar',

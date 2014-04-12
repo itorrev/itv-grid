@@ -20,7 +20,7 @@ panelDirectivesModule.directive('itvPanelheader', function(){
     }
 });
 
-panelDirectivesModule.directive('itvPanelfooter', function(){
+panelDirectivesModule.directive('itvPanelfooter', function(UtilsService){
     return {
         restrict: 'E',
         templateUrl: '../src/templates/panelFooter.html',
@@ -32,6 +32,7 @@ panelDirectivesModule.directive('itvPanelfooter', function(){
                 console.log('invocado cambio de pagina: ' + pagina);
                 scope.clearEditMode();
                 scope.pagina = pagina;
+                scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
             };
 
             scope.getItemsShown = function(){

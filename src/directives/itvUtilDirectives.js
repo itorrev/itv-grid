@@ -86,11 +86,26 @@ itvUtilDirectivesModule.directive('itvMessage', function($interpolate, itvMessag
     return {
         restrict: 'A',
         scope: true,
-        link: function(scope, elem, attrs){
-            if(attrs.itvMessage){
-                scope.literal = itvMessages[attrs.itvMessage] || attrs.itvMessage;
-                scope.value = $interpolate(scope.literal)(scope.$parent);
-                elem.html(scope.value);
+        compile: function(tElem, tAttr){
+            var params = tAttr.itvMessageParam ? tAttr.itvMessageParam : undefined;
+
+            return function(scope, elem, attrs){
+                if(attrs.itvMessage){
+                    scope.literal = itvMessages[attrs.itvMessage] || attrs.itvMessage;
+                };
+
+                var updateValue = function(){
+                    scope.value = $interpolate(scope.literal)(scope.$parent);
+                    elem.html(scope.value);
+                };
+
+                if(params){
+                    attrs.$observe('itvMessageParam', function(newParams){
+                        updateValue();
+                    });
+                };
+
+                updateValue();
             }
         }
     }
