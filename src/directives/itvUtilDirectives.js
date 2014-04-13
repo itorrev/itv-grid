@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var itvUtilDirectivesModule = angular.module('itvUtilDirectivesModule', ['itvMessagesModule']);
+var itvUtilDirectivesModule = angular.module('itvUtilDirectivesModule', ['itvMessagesModule', 'ngAnimate']);
 
 /**
  * Directiva para manejar un grupo de checkboxes y convertir la selección en un array de valores
@@ -92,7 +92,7 @@ itvUtilDirectivesModule.directive('itvMessage', function($interpolate, itvMessag
             return function(scope, elem, attrs){
                 if(attrs.itvMessage){
                     scope.literal = itvMessages[attrs.itvMessage] || attrs.itvMessage;
-                };
+                }
 
                 var updateValue = function(){
                     scope.value = $interpolate(scope.literal)(scope.$parent);
@@ -103,7 +103,7 @@ itvUtilDirectivesModule.directive('itvMessage', function($interpolate, itvMessag
                     attrs.$observe('itvMessageParam', function(newParams){
                         updateValue();
                     });
-                };
+                }
 
                 updateValue();
             }
@@ -111,7 +111,7 @@ itvUtilDirectivesModule.directive('itvMessage', function($interpolate, itvMessag
     }
 });
 
-/***
+/**
  * Directiva para hacer desaparecer el tooltip de Angular Bootstrap UI
  * Dado que no hay api para el acceso programático se utiliza un 'hack'
  * que consiste en modificar una propiedad expuesta por el propio bootstrap
@@ -127,5 +127,22 @@ itvUtilDirectivesModule.directive('itvTooltipfade', function($timeout){
                 scope.tt_isOpen = false;
             }, timeout);
         });
+    }
+});
+
+/**
+ * Directiva de animación para un efecto de deslizamiento vertical
+ * Se apoya en la librería Tweenlite de greensock
+ */
+
+itvUtilDirectivesModule.directive('itvSlideAnimation', function($animate){
+    return function(scope, element, attrs){
+        scope.$watch(attrs.itvSlideAnimation, function(newValue){
+            console.log('cambio en valor: ' + newValue);
+            if(newValue){
+                console.log('entrando en addclass');
+                $animate.addClass(element, 'itvSlide');
+            }
+        })
     }
 });

@@ -22,7 +22,8 @@ module.exports = function(grunt){
                     'font-awesome/fonts/fontawesome-webfont.ttf' : 'bower_components/font-awesome/fonts/fontawesome-webfont.ttf',
                     'font-awesome/fonts/fontawesome-webfont.woff' : 'bower_components/font-awesome/fonts/fontawesome-webfont.woff',
                     'jquery/jquery.min.js' : 'bower_components/jquery/dist/jquery.min.js',
-                    'underscore/underscore.js': 'bower_components/underscore/underscore.js'
+                    'underscore/underscore.js': 'bower_components/underscore/underscore.js',
+                    'greensock/TweenLite.min.js': 'bower_components/greensock/src/minified/TweenLite.min.js'
                 }
             }
         }
