@@ -46,7 +46,7 @@ panelDirectivesModule.directive('itvPanelfooter', function(UtilsService){
     }
 });
 
-panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', function($modal, UtilsService){
+panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
     return {
         restrict: 'E',
         templateUrl: '../src/templates/panelBody.html',
@@ -167,4 +167,4 @@ panelDirectivesModule.directive('itvPanelbody', ['$modal', 'UtilsService', funct
             };
         }
     }
-}]);
+});
