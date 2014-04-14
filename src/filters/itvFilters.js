@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var itvFiltersModule = angular.module('itvFiltersModule', ['itvMessagesModule']);
+var itvFiltersModule = angular.module('itvFilters', ['itvMessagesModule']);
 
 itvFiltersModule.filter('paginationFilter', function(){
     return function(input, pagina, itemsPorPagina){

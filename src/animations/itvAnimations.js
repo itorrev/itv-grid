@@ -1,7 +1,8 @@
 /**
  * Created by Aleksandr on 5/04/14.
  */
-var itvAnimationsModule = angular.module('itvAnimationsModule', []);
+var itvAnimationsModule = angular.module('itvAnimations', []);
+
 
 itvAnimationsModule.animation('.itvSlideTable', function(){
     return {

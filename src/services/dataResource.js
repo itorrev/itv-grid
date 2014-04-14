@@ -4,7 +4,7 @@
 
 'use strict';
 
-var dataResourceModule = angular.module('dataResourceModule', []);
+var dataResourceModule = angular.module('itvDataResource', []);
 
 dataResourceModule.provider('DataResource', function(){
 

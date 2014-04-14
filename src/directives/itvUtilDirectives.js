@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var itvUtilDirectivesModule = angular.module('itvUtilDirectivesModule', ['itvMessagesModule', 'ngAnimate']);
+var itvUtilDirectivesModule = angular.module('itvUtilDirectives', ['itvMessagesModule', 'ngAnimate']);
 
 /**
  * Directiva para manejar un grupo de checkboxes y convertir la selección en un array de valores

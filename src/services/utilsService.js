@@ -1,7 +1,7 @@
 /**
  * Created by Aleksandr on 28/03/14.
  */
-var utilsServiceModule = angular.module('utilsServiceModule', []);
+var utilsServiceModule = angular.module('itvUtilsService', []);
 
 utilsServiceModule.factory('UtilsService', function(filterFilter){
     var UtilsService = {};
