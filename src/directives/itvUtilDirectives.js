@@ -11,7 +11,7 @@
  * Módulo con directivas de utilidad para diversas tareas.
  *
  */
-var itvUtilDirectivesModule = angular.module('itvUtilDirectivesModule', ['itvMessagesModule', 'ngAnimate']);
+var itvUtilDirectivesModule = angular.module('itvUtilDirectives', ['itvMessagesModule', 'ngAnimate']);
 
 /**
  * @ngdoc directive
