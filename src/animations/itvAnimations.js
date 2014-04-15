@@ -35,7 +35,6 @@ itvAnimationsModule.animation('.itvSlide', function($timeout){
     var height = 0;
     return {
         beforeAddClass: function(element, className){
-            console.log('beforeaddclass con className: ' + className);
            height = element.height();
             if(className == 'ng-hide'){
                 element.addClass('overflowHidden');
@@ -66,7 +65,7 @@ itvAnimationsModule.animation('.itvSlide', function($timeout){
  * Se utiliza 'removeClass' por el mismo motivo, realizar la animación una vez se ha quitado
  * la clase '.ngHide' del elemento.
  * A la hora de realizar la animación de volver a mostrar el elemento es
- * necesario comprobar si es una tabla para poner el valor correcto en la propiedad 'display'
+ * necesario comprobar el tipo de elemento para poner el valor correcto en la propiedad 'display'
  */
 itvAnimationsModule.animation('.itvFade', function(){
     return {
@@ -77,7 +76,14 @@ itvAnimationsModule.animation('.itvFade', function(){
         },
         removeClass: function(element, className){
             if(className == 'ng-hide'){
-                var displayMode = (element[0].getAttribute('class')).indexOf('table') != -1 ? 'table' : 'block';
+                var tagName = (element[0])['tagName'];
+                var displayMode = 'block';
+                if(tagName == 'TD' || tagName == 'TH'){
+                    displayMode = 'table-cell';
+                } else if(tagName == 'TABLE'){
+                    displayMode = 'table';
+                };
+
                 TweenMax.to(element, 1, {opacity: 1, display: displayMode});
             }
         }
