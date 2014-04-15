@@ -31,58 +31,60 @@
     <div style="margin: 3em">
         <div class="panel panel-default">
             <itv-Panelheader></itv-Panelheader>
-            <itv-Panelbody></itv-Panelbody>
-            <table class="table table-striped table-bordered table-condensed table-hover itvFade" ng-hide="isCollapsed">
-                <thead>
-                <tr>
-                    <th ng-repeat="header in headers" ng-click="setOrderBy(header.name)" class="headerStyle" ng-hide="header.isHidden">
-                        {{ header.name | capitalize}}
-                        <i ng-class="{'fa-sort-asc': orderBy.asc, 'fa-sort-desc': !orderBy.asc}" ng-show="orderBy.headerName == header.name" class="fa rightFloater"></i>
-                        <i class="fa fa-sort rightFloater" ng-show="orderBy.headerName != header.name"></i>
-                    </th>
-                    <th class="col-xs-1">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-show="insertMode">
-                    <td ng-repeat="header in headers" ng-hide="header.isHidden">
-                        <div ng-show="header.isEditable"><input class="form-control" type="text" ng-model="insertRow[header.name]"></div>
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn btn-default btn-sm" ng-click="insertData()"><i class="fa fa-save fa-lg"></i></button>
-                            <button class="btn btn-default btn-sm" ng-click="setInsertMode()"><i class="fa fa-reply fa-lg"></i></button>
-                        </div>
-                    </td>
-                </tr>
-                <tr ng-repeat="row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina">
-                    <td ng-repeat="header in headers" ng-hide="header.isHidden">
-                        <div ng-show="row.editMode == null || row.editMode == false || !header.isEditable">{{ row[header.name] }}</div>
-                        <div ng-show="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="copiedEditingRow[header.name]"></div>
-                    </td>
-                    <td>
-                        <div class="btn-group" ng-show="row.editMode == null || row.editMode == false">
-                            <button class="btn btn-default btn-sm" ng-click="deleteData(row)" itv-tooltipfade tooltip="{{ 'action.btn.delete.tooltip' | messageFilter }}">
-                                <i class="fa fa-trash-o fa-lg"></i>
-                            </button>
-                            <button class="btn btn-default btn-sm" ng-click="setRowEditable(row)" itv-tooltipfade tooltip="{{ 'action.btn.edit.tooltip' | messageFilter }}">
-                                <i class="fa fa-edit fa-lg"></i>
-                            </button>
-                        </div>
-                        <div class="btn-group" ng-show="row.editMode == true">
-                            <button class="btn btn-default btn-sm" ng-click="setRowEditable(row)" itv-tooltipfade tooltip="{{ 'action.btn.undo.tooltip' | messageFilter }}">
-                                <i class="fa fa-reply fa-lg"></i>
-                            </button>
-                            <button class="btn btn-default btn-sm" ng-click="updateData(copiedEditingRow)" ng-show="row.editMode == true"
-                                    itv-tooltipfade tooltip="{{ 'action.btn.save.tooltip' | messageFilter }}">
-                                <i class="fa fa-save fa-lg"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <itv-Panelfooter></itv-Panelfooter>
+            <div class="animated-panel itvSlide" ng-hide="isCollapsed">
+                <itv-Panelbody></itv-Panelbody>
+                <table class="table table-striped table-bordered table-condensed table-hover itvFade">
+                    <thead>
+                    <tr>
+                        <th ng-repeat="header in headers" ng-click="setOrderBy(header.name)" class="headerStyle" ng-hide="header.isHidden">
+                            {{ header.name | capitalize}}
+                            <i ng-class="{'fa-sort-asc': orderBy.asc, 'fa-sort-desc': !orderBy.asc}" ng-show="orderBy.headerName == header.name" class="fa rightFloater"></i>
+                            <i class="fa fa-sort rightFloater" ng-show="orderBy.headerName != header.name"></i>
+                        </th>
+                        <th class="col-xs-1">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-show="insertMode">
+                        <td ng-repeat="header in headers" ng-hide="header.isHidden">
+                            <div ng-show="header.isEditable"><input class="form-control" type="text" ng-model="insertRow[header.name]"></div>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-default btn-sm" ng-click="insertData()"><i class="fa fa-save fa-lg"></i></button>
+                                <button class="btn btn-default btn-sm" ng-click="setInsertMode()"><i class="fa fa-reply fa-lg"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr ng-repeat="row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina">
+                        <td ng-repeat="header in headers" ng-hide="header.isHidden">
+                            <div ng-show="row.editMode == null || row.editMode == false || !header.isEditable">{{ row[header.name] }}</div>
+                            <div ng-show="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="copiedEditingRow[header.name]"></div>
+                        </td>
+                        <td>
+                            <div class="btn-group" ng-show="row.editMode == null || row.editMode == false">
+                                <button class="btn btn-default btn-sm" ng-click="deleteData(row)" itv-tooltipfade tooltip="{{ 'action.btn.delete.tooltip' | messageFilter }}">
+                                    <i class="fa fa-trash-o fa-lg"></i>
+                                </button>
+                                <button class="btn btn-default btn-sm" ng-click="setRowEditable(row)" itv-tooltipfade tooltip="{{ 'action.btn.edit.tooltip' | messageFilter }}">
+                                    <i class="fa fa-edit fa-lg"></i>
+                                </button>
+                            </div>
+                            <div class="btn-group" ng-show="row.editMode == true">
+                                <button class="btn btn-default btn-sm" ng-click="setRowEditable(row)" itv-tooltipfade tooltip="{{ 'action.btn.undo.tooltip' | messageFilter }}">
+                                    <i class="fa fa-reply fa-lg"></i>
+                                </button>
+                                <button class="btn btn-default btn-sm" ng-click="updateData(copiedEditingRow)" ng-show="row.editMode == true"
+                                        itv-tooltipfade tooltip="{{ 'action.btn.save.tooltip' | messageFilter }}">
+                                    <i class="fa fa-save fa-lg"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <itv-Panelfooter></itv-Panelfooter>
+            </div>
         </div>
     </div>
 </div>
