@@ -56,6 +56,10 @@ itvAnimationsModule.animation('.itvSlide', function($timeout){
  *
  * Realiza una animación de 'fade in-out' cuando se añade y elimina
  * la clase '.ngHide' de un elemento.
+ * Se utiliza 'beforeAddClass' ya que la animación ha de realizarse antes de que
+ * se añada la clase '.ngHide' dado que si no se ocultaría el elemento antes de la animación.
+ * Se utiliza 'removeClass' por el mismo motivo, realizar la animación una vez se ha quitado
+ * la clase '.ngHide' del elemento.
  * A la hora de realizar la animación de volver a mostrar el elemento es
  * necesario comprobar si es una tabla para poner el valor correcto en la propiedad 'display'
  */

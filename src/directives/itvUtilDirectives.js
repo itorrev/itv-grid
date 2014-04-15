@@ -1,6 +1,3 @@
-/**
- * Created by itorrev on 8/04/14.
- */
 'use strict';
 
 /**
@@ -212,7 +209,7 @@ itvUtilDirectivesModule.directive('itvTooltipfade', function($timeout){
  * Directiva que añade una clase css al elemento cuando cambia la expresión
  * definida como parámetro, para ello utiliza $watch().
  *
- * @element INPUT
+ * @element ANY
  * @param {expression} itvSlideAnimation Expresión de cuyo valor depende que
  * se añada la clase css al elemento.
  *
