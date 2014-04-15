@@ -24,6 +24,8 @@ var itvFiltersModule = angular.module('itvFilters', ['itvMessagesModule']);
  * @param {number | string} pagina Número de página a devolver
  * @param {number | string} itemsPorPagina Número de elementos mostrados en cada página
  *
+ * @returns {array} subconjunto del array de entrada en base a los parámetros recibidos.
+ *
  */
 itvFiltersModule.filter('paginationFilter', function(){
     return function(input, pagina, itemsPorPagina){
@@ -52,6 +54,8 @@ itvFiltersModule.filter('paginationFilter', function(){
  *
  * @param {string} input Cadena cuya primera letra hay que mostrar en mayúsculas
  *
+ * @returns {string} String de entrada con su primera letra en mayúsculas
+ *
  */
 itvFiltersModule.filter('capitalize', function(){
     return function(input) {
@@ -76,6 +80,8 @@ itvFiltersModule.filter('capitalize', function(){
  *
  * @param {string} key Clave del módulo de mensajes que corresponde a un literal definido.
  *
+ * @returns {string} Literal definido en el módulo de mensajes que corresponde a la clave
+ * pasada como parámetro o la clave si no lo encuentra.
  */
 itvFiltersModule.filter('messageFilter', function(itvMessages){
     return function(key){
