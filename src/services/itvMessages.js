@@ -3,6 +3,16 @@
  */
 'use strict';
 
+/**
+ * @ngdoc module
+ * @name itvMessagesModule
+ * @description
+ *
+ * Módulo que define un objeto que empareja clave-valor de los literales
+ * utilizados en el grid, de forma que todos los literales estén en un
+ * único fichero lo que facilitará su modificación.
+ *
+ */
 var itvMessagesModule = angular.module('itvMessagesModule', []);
 
 itvMessagesModule.value('itvMessages', {
