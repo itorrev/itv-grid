@@ -25,7 +25,11 @@ var itvAnimationsModule = angular.module('itvAnimations', []);
  * para que funcione correctamente, pero como da problemas si se deja de continuo tras
  * realizar la animación de deslizar hacia abajo (mostrar) se vuelve a quitar y para que no
  * se solape con la transición se le establece un timeout ligeramente superior a la duración
- * definida.
+ * definida. También tras la animación se cambia la propiedad css de 'height' al valor
+ * 'auto' para permitir que varíe el tamaño en función del número deelementos mostrados. No
+ * es posible utilizar ese valor directamente puesto que en ese caso la animación no
+ * funcionaría.
+ *
  */
 itvAnimationsModule.animation('.itvSlide', function($timeout){
     var height = 0;
@@ -43,6 +47,7 @@ itvAnimationsModule.animation('.itvSlide', function($timeout){
                 TweenMax.to(element, 1, {css: {height: height}});
                 $timeout(function(){
                     element.removeClass('overflowHidden');
+                    element.css('height', 'auto');
                 }, 1100);
             }
         }
