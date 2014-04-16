@@ -53,6 +53,12 @@
     border: 0px;
 }
 
+/*
+Los siguientes estilos están modificados partiendo de los de bootstrap css para
+permitir la integración correcta entre los elementos panel y table cuando no
+se siguen las directrices marcadas por bootstrap.
+*/
+
 .animated-panel > .panel-body + .table, .animated-panel > .panel-body + .table-responsive
 {
     border-top: 1px solid #ddd;
