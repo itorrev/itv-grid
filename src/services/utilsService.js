@@ -10,6 +10,14 @@
  */
 var utilsServiceModule = angular.module('itvUtilsService', []);
 
+/**
+ * @ngdoc object
+ * @name UtilsService
+ * @description
+ *
+ * Contiene métodos reutilizables para su uso en distintas partes del
+ * código del grid de datos.
+ */
 utilsServiceModule.factory('UtilsService', function(filterFilter){
     var UtilsService = {};
 
@@ -107,8 +115,6 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
      * @param {array} headers Array de objetos que corresponden a las columnas del
      * grid de datos.
      * @param {array} hiddenColumns Array con los nombres de cada columna no visible.
-     *
-     * @returns {array} El objeto headers con sus valores actualizados.
      *
      */
     UtilsService.setHiddenColumns = function(headers, hiddenColumns){
