@@ -14,6 +14,7 @@
     <script src="../vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="../vendor/angular-animate/angular-animate.js"></script>
     <script src="../vendor/greensock/TweenMax.min.js"></script>
+    <!--script src="../vendor/colresizable/colResizable-1.3.source.js"></script-->
 
     <!-- build:js scripts/scripts.js -->
     <script src="itvGridTestApp.js"></script>
@@ -33,7 +34,7 @@
             <itv-Panelheader></itv-Panelheader>
             <div class="animated-panel itvSlide" ng-hide="isCollapsed">
                 <itv-Panelbody></itv-Panelbody>
-                <table class="table table-striped table-bordered table-condensed table-hover">
+                <table class="table table-striped table-bordered table-condensed table-hover" id="tableTest">
                     <thead>
                     <tr>
                         <th ng-repeat="header in headers" ng-click="setOrderBy(header.name)" class="headerStyle itvFade" ng-hide="header.isHidden">
@@ -88,5 +89,14 @@
         </div>
     </div>
 </div>
+
+<!--script>
+    jQuery(function(){
+        setTimeout(function(){
+            jQuery("#tableTest").colResizable();
+        }, 5000);
+    });
+</script-->
+
 </body>
 </html>
