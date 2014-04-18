@@ -31,18 +31,20 @@ var itvAnimationsModule = angular.module('itvAnimations', []);
  * funcionaría.
  *
  */
-itvAnimationsModule.animation('.itvSlide', function($timeout){
+itvAnimationsModule.animation('.itvSlide', function($timeout, $log){
     var height = 0;
     return {
         beforeAddClass: function(element, className){
-           height = element.height();
-            if(className == 'ng-hide'){
+            if (className === 'ng-hide'){
+                $log.log('itvSlide beforeAddClass');
+                height = element.height();
                 element.addClass('overflowHidden');
                 TweenMax.to(element, 1, {css: {height: 0}});
             }
         },
         removeClass: function(element, className){
-            if(className == 'ng-hide'){
+            if (className === 'ng-hide'){
+                $log.log('itvSlide removeClass');
                 TweenMax.to(element, 1, {css: {height: height}});
                 $timeout(function(){
                     element.removeClass('overflowHidden');
@@ -67,24 +69,25 @@ itvAnimationsModule.animation('.itvSlide', function($timeout){
  * A la hora de realizar la animación de volver a mostrar el elemento es
  * necesario comprobar el tipo de elemento para poner el valor correcto en la propiedad 'display'
  */
-itvAnimationsModule.animation('.itvFade', function(){
+itvAnimationsModule.animation('.itvFade', function($log){
     return {
         beforeAddClass: function(element, className){
-            if(className == 'ng-hide'){
-                TweenMax.to(element, 1, {opacity: 0, display: 'none'});
+            if (className === 'ng-hide'){
+                $log.log('itvFade beforeAddClass');
+                TweenMax.to(element, 1, {css: {opacity: 0, display: 'none'}});
             }
         },
         removeClass: function(element, className){
-            if(className == 'ng-hide'){
+            if (className === 'ng-hide'){
+                $log.log('itvFade removeClass');
                 var tagName = (element[0])['tagName'];
                 var displayMode = 'block';
                 if(tagName == 'TD' || tagName == 'TH'){
                     displayMode = 'table-cell';
                 } else if(tagName == 'TABLE'){
                     displayMode = 'table';
-                };
-
-                TweenMax.to(element, 1, {opacity: 1, display: displayMode});
+                }
+                TweenMax.to(element, 1, {css: {opacity: 1, display: displayMode}});
             }
         }
     }

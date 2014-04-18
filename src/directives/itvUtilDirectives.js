@@ -36,7 +36,6 @@ itvUtilDirectivesModule.directive('itvCheckboxlist', function($log){
             value: '@'
         },
         link: function(scope, elem, attrs){
-            $log.log('iniciada directiva para el valor ' + attrs.value);
             var modelToView = function(){
                 var checked = elem.prop('checked');
                 var index = scope.list.indexOf(scope.value);
@@ -59,8 +58,6 @@ itvUtilDirectivesModule.directive('itvCheckboxlist', function($log){
 
             elem.bind('change', function(){
                 scope.$apply(viewToModel());
-                $log.log('actualmente en la seleccion: ');
-                $log.log(scope.list);
             });
             scope.$watch('list', modelToView, true);
         }
@@ -202,26 +199,32 @@ itvUtilDirectivesModule.directive('itvTooltipfade', function($timeout){
 
 /**
  * @ngdoc directive
- * @name itvSlideAnimation
+ * @name itvAnimate
  * @restrict A
  *
  * @description
  * Directiva que añade una clase css al elemento cuando cambia la expresión
  * definida como parámetro, para ello utiliza $watch().
+ * Permite definir la clase a añadir si se incluye el parámetro
+ * itv-animate-class
  *
  * @element ANY
- * @param {expression} itvSlideAnimation Expresión de cuyo valor depende que
+ * @param {expression} itvAnimate Expresión de cuyo valor depende que
  * se añada la clase css al elemento.
  *
  */
-itvUtilDirectivesModule.directive('itvSlideAnimation', function($animate){
-    return function(scope, element, attrs){
-        scope.$watch(attrs.itvSlideAnimation, function(newValue){
-            console.log('cambio en valor: ' + newValue);
-            if(newValue){
-                console.log('entrando en addclass');
-                $animate.addClass(element, 'itvSlide');
-            }
-        })
+itvUtilDirectivesModule.directive('itvAnimate', function($animate){
+    return {
+        scope: true,
+        link: function(scope, element, attrs){
+            var classToAdd = attrs.itvAnimateClass ? attrs.itvAnimateClass : 'itvAnimate';
+            scope.$watch(attrs.itvAnimate, function(newValue){
+                if(newValue){
+                    $animate.addClass(element, classToAdd);
+                } else {
+                    $animate.removeClass(element, classToAdd);
+                }
+            })
+        }
     }
 });
