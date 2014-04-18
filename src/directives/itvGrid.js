@@ -11,8 +11,8 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
         scope: {},
         templateUrl: '../src/templates/itvGrid.html',
         link: function(scope, element, attrs){
-            DataResource.setUrl('http://localhost:8080/itvRestServer/rest/personas');
-            scope.title = 'Tabla';
+            DataResource.setUrl(attrs.itvGridUrl);
+            scope.title = attrs.itvGridTitle || 'Data Grid';
             scope.itemsPorPagina = 10;
             scope.itemsTotales = 0;
             scope.orderBy = {headerName: '', asc: false};
@@ -22,6 +22,12 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.hiddenColumns = [];
             scope.advancedFilterActive = false;
             scope.advancedFilterObj = {};
+
+            if(attrs.itvGridHide){
+                angular.forEach(attrs.itvGridHide.split(','), function(value, key){
+                    scope.hiddenColumns.push(value);
+                });
+            }
 
             scope.setOrderBy = function(header){
                 console.log('ordenando by ' + header);
