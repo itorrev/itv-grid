@@ -36,7 +36,6 @@ itvAnimationsModule.animation('.itvSlide', function($timeout, $log){
     return {
         beforeAddClass: function(element, className, done){
             if (className === 'ng-hide'){
-                $log.log('itvSlide beforeAddClass');
                 height = element.height();
                 element.addClass('overflowHidden');
                 TweenMax.to(element, 1, {css: {height: 0}, onComplete: done});
@@ -44,7 +43,6 @@ itvAnimationsModule.animation('.itvSlide', function($timeout, $log){
         },
         removeClass: function(element, className, done){
             if (className === 'ng-hide'){
-                $log.log('itvSlide removeClass');
                 TweenMax.to(element, 1, {css: {height: height}, onComplete: done});
                 $timeout(function(){
                     element.removeClass('overflowHidden');
@@ -66,29 +64,16 @@ itvAnimationsModule.animation('.itvSlide', function($timeout, $log){
  * se añada la clase '.ngHide' dado que si no se ocultaría el elemento antes de la animación.
  * Se utiliza 'removeClass' por el mismo motivo, realizar la animación una vez se ha quitado
  * la clase '.ngHide' del elemento.
- * A la hora de realizar la animación de volver a mostrar el elemento es
- * necesario comprobar el tipo de elemento para poner el valor correcto en la propiedad 'display'
  */
 itvAnimationsModule.animation('.itvFade', function($log){
     return {
         beforeAddClass: function(element, className, done){
             if (className === 'ng-hide'){
-                $log.log('itvFade beforeAddClass');
-                $log.log(done);
                 TweenMax.to(element, 1, {css: {opacity: 0}, onComplete: done});
             }
         },
         removeClass: function(element, className, done){
             if (className === 'ng-hide'){
-                $log.log('itvFade removeClass');
-                $log.log(done);
-                var tagName = (element[0])['tagName'];
-                var displayMode = 'block';
-                if(tagName == 'TD' || tagName == 'TH'){
-                    displayMode = 'table-cell';
-                } else if(tagName == 'TABLE'){
-                    displayMode = 'table';
-                }
                 TweenMax.to(element, 1, {css: {opacity: 1}, onComplete: done});
             }
         }
