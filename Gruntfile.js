@@ -27,9 +27,20 @@ module.exports = function(grunt){
                     'greensock/TweenMax.min.js': 'bower_components/greensock/src/minified/TweenMax.min.js'
                 }
             }
+        },
+        ngtemplates: {
+            itvGrid: {
+                options: {
+                    prefix: 'itvGridTemplates/'
+                },
+                src: ['src/templates/**.html'],
+                dest: 'build/itvGridTemplates.js'
+            }
         }
     });
     grunt.loadNpmTasks('grunt-bowercopy');
+    grunt.loadNpmTasks('grunt-angular-templates');
 
     grunt.registerTask('gbc', ['bowercopy']);
+    grunt.registerTask('templates', ['ngtemplates']);
 };

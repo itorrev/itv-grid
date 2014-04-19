@@ -9,7 +9,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
     return {
         restrict: 'E',
         scope: {},
-        templateUrl: '../src/templates/itvGrid.html',
+        templateUrl: 'itvGridTemplates/src/templates/itvGrid.html',
         link: function(scope, element, attrs){
             DataResource.setUrl(attrs.itvGridUrl);
             scope.title = attrs.itvGridTitle || 'Data Grid';

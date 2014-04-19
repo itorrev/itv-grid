@@ -27,7 +27,7 @@ var panelDirectivesModule = angular.module('itvPanelDirectives', ['ui.bootstrap'
 panelDirectivesModule.directive('itvPanelheader', function(){
     return {
         restrict: 'E',
-        templateUrl: '../src/templates/panelHeader.html',
+        templateUrl: 'itvGridTemplates/src/templates/panelHeader.html',
         replace: true,
         link: function(scope){
             // se inicializa la variable que define si está desplegado el grid
@@ -58,7 +58,7 @@ panelDirectivesModule.directive('itvPanelheader', function(){
 panelDirectivesModule.directive('itvPanelfooter', function(UtilsService){
     return {
         restrict: 'E',
-        templateUrl: '../src/templates/panelFooter.html',
+        templateUrl: 'itvGridTemplates/src/templates/panelFooter.html',
         replace: true,
         link: function(scope){
             scope.pagina = 1;
@@ -104,7 +104,7 @@ panelDirectivesModule.directive('itvPanelfooter', function(UtilsService){
 panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
     return {
         restrict: 'E',
-        templateUrl: '../src/templates/panelBody.html',
+        templateUrl: 'itvGridTemplates/src/templates/panelBody.html',
         replace: true,
         link: function(scope){
             // establece la variable que regula el modo de inserción
@@ -140,7 +140,7 @@ panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
                 scope.clearEditMode();
 
                 var hideColumnModal = $modal.open({
-                    templateUrl: '../src/templates/hideColumnModal.html',
+                    templateUrl: 'itvGridTemplates/src/templates/hideColumnModal.html',
                     controller: HideColumnModalCtrl,
                     // 'resolve' define los parámetros que se pasarán al controller
                     resolve: {
@@ -174,7 +174,7 @@ panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
                 scope.clearEditMode();
 
                 var advancedFilterModal = $modal.open({
-                    templateUrl: '../src/templates/advancedFilterModal.html',
+                    templateUrl: 'itvGridTemplates/src/templates/advancedFilterModal.html',
                     controller: AdvancedFilterModalCtrl,
                     resolve: {
                         headers: function(){
