@@ -29,25 +29,44 @@ module.exports = function(grunt){
             }
         },
         ngtemplates: {
-            itvGrid: {
+            dev: {
                 options: {
-                    prefix: 'itvGridTemplates/'
+                    prefix: 'itvGridTemplates/',
+                    module: 'itvGrid'
                 },
                 src: ['src/templates/**.html'],
-                dest: 'build/itvGridTemplates.js'
+                dest: 'build/dev/itvGridTemplates.js'
+            },
+            prod: {
+                options: {
+                    prefix: 'itvGridTemplates/',
+                    module: 'itvGrid',
+                    htmlmin:  {
+                        collapseWhitespace: true
+                    }
+                },
+                src: ['src/templates/**.html'],
+                dest: 'build/prod/itvGridTemplates.js'
             }
         },
-        srcFiles: [
+        srcFilesDev: [
             'src/directives/*.js',
             'src/filters/*.js',
             'src/services/*.js',
             'src/animations/*.js',
-            '<%= ngtemplates.itvGrid.dest %>'
+            '<%= ngtemplates.dev.dest %>'
+        ],
+        srcFilesProd: [
+            'src/directives/*.js',
+            'src/filters/*.js',
+            'src/services/*.js',
+            'src/animations/*.js',
+            '<%= ngtemplates.prod.dest %>'
         ],
         concat: {
-            build: {
-                src: ['<%= srcFiles %>'],
-                dest: 'build/itvDataGrid.js'
+            dev: {
+                src: ['<%= srcFilesDev %>'],
+                dest: 'build/dev/itvDataGrid.js'
             }
         }
     });
@@ -56,5 +75,5 @@ module.exports = function(grunt){
     grunt.loadNpmTasks('grunt-contrib-concat');
 
     grunt.registerTask('gbc', ['bowercopy']);
-    grunt.registerTask('templates', ['ngtemplates']);
+    grunt.registerTask('builddev', ['ngtemplates:dev', 'concat:dev']);
 };
