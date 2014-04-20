@@ -36,10 +36,24 @@ module.exports = function(grunt){
                 src: ['src/templates/**.html'],
                 dest: 'build/itvGridTemplates.js'
             }
+        },
+        srcFiles: [
+            'src/directives/*.js',
+            'src/filters/*.js',
+            'src/services/*.js',
+            'src/animations/*.js',
+            '<%= ngtemplates.itvGrid.dest %>'
+        ],
+        concat: {
+            build: {
+                src: ['<%= srcFiles %>'],
+                dest: 'build/itvDataGrid.js'
+            }
         }
     });
     grunt.loadNpmTasks('grunt-bowercopy');
     grunt.loadNpmTasks('grunt-angular-templates');
+    grunt.loadNpmTasks('grunt-contrib-concat');
 
     grunt.registerTask('gbc', ['bowercopy']);
     grunt.registerTask('templates', ['ngtemplates']);
