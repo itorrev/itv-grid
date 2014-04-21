@@ -9,6 +9,9 @@
     "grunt-bowercopy": "1.0.x",
     "karma": "0.12.x",
     "grunt-angular-templates": "~0.5.4",
-    "grunt-contrib-concat": "~0.4.0"
+    "grunt-contrib-concat": "~0.4.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-ngmin": "0.0.3",
+    "grunt-contrib-uglify": "~0.4.0"
   }
 }

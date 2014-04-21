@@ -1384,7 +1384,7 @@ var itvAnimationsModule = angular.module('itvAnimations', []);
  * funcionaría.
  *
  */
-itvAnimationsModule.animation('.itvSlide', function($timeout, $log){
+itvAnimationsModule.animation('.itvSlide',['$timeout', function($timeout){
     var height = 0;
     return {
         beforeAddClass: function(element, className, done){
@@ -1404,7 +1404,7 @@ itvAnimationsModule.animation('.itvSlide', function($timeout, $log){
             }
         }
     }
-});
+}]);
 
 /**
  * @ngdoc animation
@@ -1418,7 +1418,7 @@ itvAnimationsModule.animation('.itvSlide', function($timeout, $log){
  * Se utiliza 'removeClass' por el mismo motivo, realizar la animación una vez se ha quitado
  * la clase '.ngHide' del elemento.
  */
-itvAnimationsModule.animation('.itvFade', function($log){
+itvAnimationsModule.animation('.itvFade', function(){
     return {
         beforeAddClass: function(element, className, done){
             if (className === 'ng-hide'){

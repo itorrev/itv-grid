@@ -1,12 +1,10 @@
 module.exports = function(grunt){
     grunt.initConfig({
         bowercopy: {
-            options: {
-                srcPrefix: 'bower_components'
-            },
-            test: {
+            initial: {
                 options: {
-                    destPrefix: 'vendor'
+                    destPrefix: 'vendor',
+                    srcPrefix: 'bower_components'
                 },
                 files: {
                     'angular/angular.min.js' : 'bower_components/angular/angular.min.js',
@@ -25,6 +23,24 @@ module.exports = function(grunt){
                     'underscore/underscore.js': 'bower_components/underscore/underscore.js',
                     'greensock/TweenLite.min.js': 'bower_components/greensock/src/minified/TweenLite.min.js',
                     'greensock/TweenMax.min.js': 'bower_components/greensock/src/minified/TweenMax.min.js'
+                }
+            },
+            builddev: {
+                options: {
+                    destPrefix: 'build',
+                    srcPrefix: 'src'
+                },
+                files: {
+                    'dev/gridStyle.css': 'styles/gridStyle.css'
+                }
+            },
+            buildprod: {
+                options: {
+                    destPrefix: 'build',
+                    srcPrefix: 'src'
+                },
+                files: {
+                    'prod/gridStyle.css': 'styles/gridStyle.css'
                 }
             }
         },
@@ -67,13 +83,46 @@ module.exports = function(grunt){
             dev: {
                 src: ['<%= srcFilesDev %>'],
                 dest: 'build/dev/itvDataGrid.js'
+            },
+            prod: {
+                src: ['<%= srcFilesProd %>'],
+                dest: 'build/prod/itvDataGrid.js'
+            }
+        },
+        clean: {
+            builddev: {
+                src: ['<%= ngtemplates.dev.dest %>']
+            },
+            buildprod: {
+                src: ['<%= ngtemplates.prod.dest %>',
+                        '<%= ngmin.prod.dest %>',
+                        '<%= concat.prod.dest %>']
+            }
+        },
+        ngmin: {
+            prod: {
+                src: ['<%= concat.prod.dest %>'],
+                dest: 'build/prod/itvDataGridNgMin.js'
+            }
+        },
+        uglify: {
+            options: {
+                mangle: false
+            },
+            buildprod: {
+                files: {
+                    'build/prod/itvDataGrid.min.js': ['<%= ngmin.prod.dest %>']
+                }
             }
         }
     });
     grunt.loadNpmTasks('grunt-bowercopy');
     grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-ngmin');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
-    grunt.registerTask('gbc', ['bowercopy']);
-    grunt.registerTask('builddev', ['ngtemplates:dev', 'concat:dev']);
+    grunt.registerTask('builddev', ['ngtemplates:dev', 'concat:dev', 'bowercopy:builddev', 'clean:builddev']);
+    grunt.registerTask('buildprod', ['ngtemplates:prod', 'concat:prod', 'bowercopy:buildprod', 'ngmin:prod', 'uglify:buildprod', 'clean:buildprod']);
 };
