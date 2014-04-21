@@ -1567,9 +1567,17 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    <div class=\"btn-group\">\r" +
     "\n" +
-    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"insertData()\"><i class=\"fa fa-save fa-lg\"></i></button>\r" +
+    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"insertData()\" itv-tooltipfade tooltip=\"{{ 'action.btn.save.tooltip' | messageFilter }}\">\r" +
     "\n" +
-    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"setInsertMode()\"><i class=\"fa fa-reply fa-lg\"></i></button>\r" +
+    "                            <i class=\"fa fa-save fa-lg\"></i>\r" +
+    "\n" +
+    "                        </button>\r" +
+    "\n" +
+    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"setInsertMode()\" itv-tooltipfade tooltip=\"{{ 'action.btn.undo.tooltip' | messageFilter }}\">\r" +
+    "\n" +
+    "                            <i class=\"fa fa-reply fa-lg\"></i>\r" +
+    "\n" +
+    "                        </button>\r" +
     "\n" +
     "                    </div>\r" +
     "\n" +

@@ -20,8 +20,12 @@
                 </td>
                 <td>
                     <div class="btn-group">
-                        <button class="btn btn-default btn-sm" ng-click="insertData()"><i class="fa fa-save fa-lg"></i></button>
-                        <button class="btn btn-default btn-sm" ng-click="setInsertMode()"><i class="fa fa-reply fa-lg"></i></button>
+                        <button class="btn btn-default btn-sm" ng-click="insertData()" itv-tooltipfade tooltip="{{ 'action.btn.save.tooltip' | messageFilter }}">
+                            <i class="fa fa-save fa-lg"></i>
+                        </button>
+                        <button class="btn btn-default btn-sm" ng-click="setInsertMode()" itv-tooltipfade tooltip="{{ 'action.btn.undo.tooltip' | messageFilter }}">
+                            <i class="fa fa-reply fa-lg"></i>
+                        </button>
                     </div>
                 </td>
             </tr>
