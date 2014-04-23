@@ -207,7 +207,7 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
      */
     UtilsService.getFirstLastTotalObject = function(currentPage, totalItems, itemsPerPage){
         var initIndex = ((currentPage - 1) * itemsPerPage) + 1;
-        var endIndex = initIndex - 1 + itemsPerPage;
+        var endIndex = initIndex - 1 + (itemsPerPage * 1);
         if(endIndex > totalItems){
             endIndex = totalItems;
         }

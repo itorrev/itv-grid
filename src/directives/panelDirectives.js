@@ -131,6 +131,12 @@ panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
                 scope.searchFilter = scope.genericSearchFilter ? scope.genericSearchFilter : '';
             };
 
+            // cuando se cambia la selección de elementos por página ha de cambiar
+            // también el literal que muestra los elementos mostrados
+            scope.updateLiteral = function(){
+                scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
+            }
+
             // función que abre el 'modal' de ocultación de columnas, se apoya en el
             // servicio $modal (del proyecto angular bootstrap ui). A través del método 'open'
             // del servicio se establecen los parámetros del modal como su plantilla, los

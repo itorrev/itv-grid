@@ -40,7 +40,7 @@
         </div>
         <div class="form-group rightFloater">
             <label for="itemsPorPagina" itv-message="panelbody.page.items"></label>
-            <select class="form-control" id="itemsPorPagina" ng-model="itemsPorPagina">
+            <select class="form-control" id="itemsPorPagina" ng-model="itemsPorPagina" ng-change="updateLiteral()">
                 <option>10</option>
                 <option>25</option>
                 <option>50</option>

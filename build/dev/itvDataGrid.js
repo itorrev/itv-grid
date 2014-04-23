@@ -487,6 +487,12 @@ panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
                 scope.searchFilter = scope.genericSearchFilter ? scope.genericSearchFilter : '';
             };
 
+            // cuando se cambia la selección de elementos por página ha de cambiar
+            // también el literal que muestra los elementos mostrados
+            scope.updateLiteral = function(){
+                scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
+            }
+
             // función que abre el 'modal' de ocultación de columnas, se apoya en el
             // servicio $modal (del proyecto angular bootstrap ui). A través del método 'open'
             // del servicio se establecen los parámetros del modal como su plantilla, los
@@ -1336,7 +1342,7 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
      */
     UtilsService.getFirstLastTotalObject = function(currentPage, totalItems, itemsPerPage){
         var initIndex = ((currentPage - 1) * itemsPerPage) + 1;
-        var endIndex = initIndex - 1 + itemsPerPage;
+        var endIndex = initIndex - 1 + (itemsPerPage * 1);
         if(endIndex > totalItems){
             endIndex = totalItems;
         }
@@ -1732,7 +1738,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <label for=\"itemsPorPagina\" itv-message=\"panelbody.page.items\"></label>\r" +
     "\n" +
-    "            <select class=\"form-control\" id=\"itemsPorPagina\" ng-model=\"itemsPorPagina\">\r" +
+    "            <select class=\"form-control\" id=\"itemsPorPagina\" ng-model=\"itemsPorPagina\" ng-change=\"updateLiteral()\">\r" +
     "\n" +
     "                <option>10</option>\r" +
     "\n" +
