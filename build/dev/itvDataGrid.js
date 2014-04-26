@@ -22,11 +22,22 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.hiddenColumns = [];
             scope.advancedFilterActive = false;
             scope.advancedFilterObj = {};
+            scope.paramHeaders = [];
+
+            if(attrs.itvGridColumns){
+                angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
+                    scope.paramHeaders.push(value);
+                });
+            };
 
             if(attrs.itvGridHide){
                 angular.forEach(attrs.itvGridHide.split(','), function(value, key){
                     scope.hiddenColumns.push(value);
                 });
+            };
+
+            if(attrs.itvGridId){
+                DataResource.setIdField(attrs.itvGridId);
             }
 
             scope.setOrderBy = function(header){
@@ -55,7 +66,8 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     console.log(data);
                     scope.data = data;
                     scope.filteredData = data;
-                    scope.headers = UtilsService.createHeaders(_.keys(data[0]), DataResource.getNotEditableFields(), scope.hiddenColumns);
+                    var baseHeaders = scope.paramHeaders.length > 0 ? scope.paramHeaders : _.keys(data[0]);
+                    scope.headers = UtilsService.createHeaders(baseHeaders, DataResource.getNotEditableFields(), scope.hiddenColumns);
                     scope.itemsTotales = scope.filteredData.length;
                     scope.cambioPagina(1);
                     scope.searchFilter = '';
