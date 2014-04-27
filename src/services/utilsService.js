@@ -30,9 +30,20 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
      * Crea un objeto por cada cabecera de la tabla que almacenará el nombre
      * a mostrar, si se puede editar el campo correspondiente a esa columna
      * y si está oculto.
+     * El primer parámetro 'headers' siempre será un array pero sus elementos
+     * pueden ser de dos tipos:
+     *  - serán elementos de tipo String para columnas ya definidas y filtradas
+     *  previamente
+     *  -serán elementos de tipo array si se está utilizando un elemento de la
+     *  tabla como ejemplo para definir las columnas, en este caso cada elemento
+     *  será un array cuyo primer elemento será el nombre de la columna y el
+     *  segundo será el valor de dicha columna.
      *
+     * En el segundo caso solo se utilizarán como columna campos cuyo valor
+     * no sea un objeto o un array.
      *
-     * @param {array} headers Array con los nombres de cada columna de la tabla del grid.
+     * @param {array} headers Array con los nombres o los pares nombre, valor de
+     * cada columna de la tabla del grid
      * @param {array} notEditableFields Array con los nombres de las columnas
      * que no permiten su edición.
      * @param {array} hiddenColumns Array con los nombres de cada columna no visible.
@@ -44,11 +55,16 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
     UtilsService.createHeaders = function(headers, notEditableFields, hiddenColumns){
         var classHeaders = [];
         angular.forEach(headers, function(value, key){
-            classHeaders.push({
-                name: value,
-                isEditable: !_.contains(notEditableFields, value),
-                isHidden: _.contains(hiddenColumns, value)
-            });
+            console.log(key);
+            console.log(value);
+            if(!angular.isArray(value) || (!angular.isObject(value[1]) && !angular.isArray(value[1]))){
+                var nombre = angular.isArray(value) ? value[0] : value;
+                classHeaders.push({
+                    name: nombre,
+                    isEditable: !_.contains(notEditableFields, nombre),
+                    isHidden: _.contains(hiddenColumns, nombre)
+                });
+            };
         });
         return classHeaders;
     };

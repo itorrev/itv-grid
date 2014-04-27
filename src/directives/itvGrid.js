@@ -40,6 +40,15 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 DataResource.setIdField(attrs.itvGridId);
             }
 
+            if(attrs.itvGridParamName && attrs.itvGridParamValue){
+                var key = attrs.itvGridParamName;
+                var value = attrs.itvGridParamValue;
+                var params = {};
+                params[key] = value;
+                console.log(JSON.stringify(params));
+                DataResource.setRequestParams(params);
+            };
+
             scope.setOrderBy = function(header){
                 console.log('ordenando by ' + header);
                 scope.clearEditMode();
@@ -66,7 +75,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     console.log(data);
                     scope.data = data;
                     scope.filteredData = data;
-                    var baseHeaders = scope.paramHeaders.length > 0 ? scope.paramHeaders : _.keys(data[0]);
+                    var baseHeaders = scope.paramHeaders.length > 0 ? scope.paramHeaders : _.pairs(data[0]);
                     scope.headers = UtilsService.createHeaders(baseHeaders, DataResource.getNotEditableFields(), scope.hiddenColumns);
                     scope.itemsTotales = scope.filteredData.length;
                     scope.cambioPagina(1);
