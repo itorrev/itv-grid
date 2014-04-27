@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MongoLabLoader</title>
+
+    <script src="../vendor/underscore/underscore.js"></script>
+    <script src="../vendor/angular/angular.js"></script>
+    <script src="../src/services/dataResource.js"></script>
+    <script src="itvDataLoaderMongoLabApp.js"></script>
+
+</head>
+<body ng-app="mongolabloaderapp" ng-controller="dataLoaderCtr">
+<div>
+    <p ng-repeat="msg in mensajes">{{msg}}</p>
+</div>
+</body>
+</html>
