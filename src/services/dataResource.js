@@ -44,6 +44,7 @@ dataResourceModule.provider('DataResource', function(){
     // de ejecución sin duplicar código.
     configurador.configurar = function(obj, config){
 
+        config.url = angular.isUndefined(config.url)? "" : config.url;
         /**
          * @ngdoc method
          * @name DataResource#setUrl (DataResourceProvider#setUrl)
@@ -64,6 +65,10 @@ dataResourceModule.provider('DataResource', function(){
                 console.log('Establecida url: ' + config.url);
             }
         };
+
+        obj.getUrl = function(){
+            return config.url;
+        }
 
         config.idField = _.isUndefined(config.idField) ? 'id' : config.idField;
 
@@ -86,7 +91,7 @@ dataResourceModule.provider('DataResource', function(){
             }
         };
 
-        config.requestParams = {} || config.requestParams;
+        config.requestParams = config.requestParams || {};
 
         /**
          * @ngdoc method
@@ -132,256 +137,283 @@ dataResourceModule.provider('DataResource', function(){
     // angularJS invocará el método $get() y utilizará el resultado en la inyección
     this.$get = ['$http', '$log', '$q', function($http, $log, $q){
 
-        // constructor para objetos DataResource, todos los elementos devueltos
-        // por el servicio serán de este tipo.
-        var DataResource = function(data){
-            angular.extend(this, data);
-        };
+        function createServiceInstance(configuration){
+            // constructor para objetos DataResource, todos los elementos devueltos
+            // por el servicio serán de este tipo.
+            var DataResource = function(data){
+                angular.extend(this, data);
+            };
 
-        // método para obtener el id de un elemento.
-        var getId = function(data){
-            return data[configObj.idField];
-        };
+            // método para obtener el id de un elemento.
+            var getId = function(data){
+                return data[configuration.idField];
+            };
 
-        /**
-         * @ngdoc method
-         * @name DataResource#query
-         *
-         * @description
-         *
-         * Método para consultar la lista de elementos a través del api REST.
-         * Realiza una petición GET a la Url establecida y convierte cada uno de
-         * los elementos devueltos en objetos DataResource.
-         * Hace uso del api $q de promesas de AngularJS para devolver una promesa
-         * en vez del resultado ya que la funcionalidad es asíncrona.
-         *
-         *
-         * @returns {object} Un objeto promise que se resolverá con el array de
-         * elementos a mostrar cuando se complete la petición asíncrona. Los
-         * elementos contendrán los datos devueltos por el servicio y serán
-         * del tipo DataResource.
-         */
-        DataResource.query = function(){
-            $log.log('query class function');
-            var deferred = $q.defer();
-            $http.get(configObj.url, {params: configObj.requestParams}).
-                then(function (response){
-                    $log.log(response.data);
-                    var result = [];
-                    angular.forEach(response.data, function (value, key){
-                        result[key] = new DataResource(value);
+            /**
+             * @ngdoc method
+             * @name DataResource#query
+             *
+             * @description
+             *
+             * Método para consultar la lista de elementos a través del api REST.
+             * Realiza una petición GET a la Url establecida y convierte cada uno de
+             * los elementos devueltos en objetos DataResource.
+             * Hace uso del api $q de promesas de AngularJS para devolver una promesa
+             * en vez del resultado ya que la funcionalidad es asíncrona.
+             *
+             *
+             * @returns {object} Un objeto promise que se resolverá con el array de
+             * elementos a mostrar cuando se complete la petición asíncrona. Los
+             * elementos contendrán los datos devueltos por el servicio y serán
+             * del tipo DataResource.
+             */
+            DataResource.query = function(){
+                $log.log('query class function');
+                var deferred = $q.defer();
+                $http.get(configuration.url, {params: configuration.requestParams}).
+                    then(function (response){
+                        $log.log(response.data);
+                        var result = [];
+                        angular.forEach(response.data, function (value, key){
+                            result[key] = new DataResource(value);
+                        });
+                        deferred.resolve(result);
                     });
-                    deferred.resolve(result);
-                });
-            return deferred.promise;
-        };
+                return deferred.promise;
+            };
 
-        /**
-         * @ngdoc method
-         * @name DataResource#get
-         *
-         * @description
-         *
-         * Método para obtener un elemento a través de su campo id, realizará una
-         * petición http de tipo GET a la url <url base> + <id>
-         * Hace uso del api $q de promesas de AngularJS para devolver una promesa
-         * en vez del resultado ya que la funcionalidad es asíncrona.
-         *
-         * @param {string} id Identificador del elemento a recuperar
-         *
-         * @returns {object} Un objeto promise que se resolverá con el elemento
-         * cuando se complete la petición asíncrona. El elemento contendrá los
-         * datos devueltos por el servicio y será un objeto de tipo DataResource.
-         */
-        DataResource.get = function(id){
-            $log.log('get(id) class function');
-            var getUrl = configObj.url + id;
-            var deferred = $q.defer();
-            $http.get(getUrl, {params: configObj.requestParams}).
-                then(function(data, status, headers, config){
-                    var resource = new DataResource(data);
-                    deferred.resolve(resource);
-                });
-            return deferred.promise;
-        };
+            /**
+             * @ngdoc method
+             * @name DataResource#get
+             *
+             * @description
+             *
+             * Método para obtener un elemento a través de su campo id, realizará una
+             * petición http de tipo GET a la url <url base> + <id>
+             * Hace uso del api $q de promesas de AngularJS para devolver una promesa
+             * en vez del resultado ya que la funcionalidad es asíncrona.
+             *
+             * @param {string} id Identificador del elemento a recuperar
+             *
+             * @returns {object} Un objeto promise que se resolverá con el elemento
+             * cuando se complete la petición asíncrona. El elemento contendrá los
+             * datos devueltos por el servicio y será un objeto de tipo DataResource.
+             */
+            DataResource.get = function(id){
+                $log.log('get(id) class function');
+                var getUrl = configuration.url + id;
+                var deferred = $q.defer();
+                $http.get(getUrl, {params: configuration.requestParams}).
+                    then(function(data, status, headers, config){
+                        var resource = new DataResource(data);
+                        deferred.resolve(resource);
+                    });
+                return deferred.promise;
+            };
 
-        /**
-         * @ngdoc method
-         * @name DataResource#$id
-         *
-         * @description
-         *
-         * Obtiene el campo id del objeto, es un método de instancia por lo que será
-         * utilizable en cualquier elemento devuelto por el servicio DataResource.
-         *
-         * @returns {string} El valor del campo definido como id en la instancia
-         * en la que se invoca.
-         */
-        DataResource.prototype.$id = function(){
-            return getId(this);
-        };
+            /**
+             * @ngdoc method
+             * @name DataResource#$id
+             *
+             * @description
+             *
+             * Obtiene el campo id del objeto, es un método de instancia por lo que será
+             * utilizable en cualquier elemento devuelto por el servicio DataResource.
+             *
+             * @returns {string} El valor del campo definido como id en la instancia
+             * en la que se invoca.
+             */
+            DataResource.prototype.$id = function(){
+                return getId(this);
+            };
 
-        /**
-         * @ngdoc method
-         * @name DataResource#save
-         *
-         * @description
-         *
-         * Método para realizar una inserción de un nuevo elemento a través de una
-         * petición al api REST. La petición http será de tipo POST a la url base
-         * definida por el servicio.
-         * Hace uso del api $q de promesas de AngularJS para devolver una promesa
-         * en vez del resultado ya que la funcionalidad es asíncrona.
-         *
-         * @param {object} data Objeto con los datos de la inserción.
-         *
-         * @returns {object} Un objeto promise que se resolverá con el elemento
-         * cuando se complete la petición asíncrona. El elemento contendrá los
-         * datos devueltos por el servicio y será un objeto de tipo DataResource.
-         */
-        DataResource.save = function(data){
-            var deferred = $q.defer();
-            $http.post(configObj.url, data, {params: configObj.requestParams}).
-                then(function(data, status, headers, config){
-                    var resource = new DataResource(data);
-                    deferred.resolve(resource);
-                });
-            return deferred.promise;
-        };
+            /**
+             * @ngdoc method
+             * @name DataResource#save
+             *
+             * @description
+             *
+             * Método para realizar una inserción de un nuevo elemento a través de una
+             * petición al api REST. La petición http será de tipo POST a la url base
+             * definida por el servicio.
+             * Hace uso del api $q de promesas de AngularJS para devolver una promesa
+             * en vez del resultado ya que la funcionalidad es asíncrona.
+             *
+             * @param {object} data Objeto con los datos de la inserción.
+             *
+             * @returns {object} Un objeto promise que se resolverá con el elemento
+             * cuando se complete la petición asíncrona. El elemento contendrá los
+             * datos devueltos por el servicio y será un objeto de tipo DataResource.
+             */
+            DataResource.save = function(data){
+                var deferred = $q.defer();
+                $http.post(configuration.url, data, {params: configuration.requestParams}).
+                    then(function(data, status, headers, config){
+                        var resource = new DataResource(data);
+                        deferred.resolve(resource);
+                    });
+                return deferred.promise;
+            };
 
-        /**
-         * @ngdoc method
-         * @name DataResource#$save
-         *
-         * @description
-         *
-         * Método para realizar una inserción de un nuevo elemento a través de una
-         * petición al api REST. La petición http será de tipo POST a la url base
-         * definida por el servicio.
-         * Hace uso del api $q de promesas de AngularJS para devolver una promesa
-         * en vez del resultado ya que la funcionalidad es asíncrona.
-         * La diferencia con el método DataResource#save es que éste es un método de
-         * instancia, de forma que se pueda invocar directamente sobre un elemento
-         * devuelto previamente por el servicio.
-         *
-         * @returns {object} Un objeto promise que se resolverá con el elemento
-         * cuando se complete la petición asíncrona. El elemento contendrá los
-         * datos devueltos por el servicio y será un objeto de tipo DataResource.
-         */
-        DataResource.prototype.$save = function(){
-            $log.log('save instance function');
-            return DataResource.save(this);
-        };
+            /**
+             * @ngdoc method
+             * @name DataResource#$save
+             *
+             * @description
+             *
+             * Método para realizar una inserción de un nuevo elemento a través de una
+             * petición al api REST. La petición http será de tipo POST a la url base
+             * definida por el servicio.
+             * Hace uso del api $q de promesas de AngularJS para devolver una promesa
+             * en vez del resultado ya que la funcionalidad es asíncrona.
+             * La diferencia con el método DataResource#save es que éste es un método de
+             * instancia, de forma que se pueda invocar directamente sobre un elemento
+             * devuelto previamente por el servicio.
+             *
+             * @returns {object} Un objeto promise que se resolverá con el elemento
+             * cuando se complete la petición asíncrona. El elemento contendrá los
+             * datos devueltos por el servicio y será un objeto de tipo DataResource.
+             */
+            DataResource.prototype.$save = function(){
+                $log.log('save instance function');
+                return DataResource.save(this);
+            };
 
-        /**
-         * @ngdoc method
-         * @name DataResource#remove
-         *
-         * @description
-         *
-         * Método para eliminar un elemento a través de una petición al api REST.
-         * La petición http será de tipo DELETE a la url <url base> + <id>.
-         * Internamente utilizará únicamente el campo definido como id del objeto
-         * para realizar la petición.
-         *
-         * @param {object} data Objeto a eliminar.
-         *
-         * @returns {object} Un objeto promise que se resolverá con el elemento
-         * cuando se complete la petición asíncrona al servicio $http.
-         */
-        DataResource.remove = function(data){
-            $log.log('remove class function');
-            $log.log(data);
-            var id = _.isObject(data) ? data.$id() : data;
-            var removeUrl = configObj.url + id;
-            return $http.delete(removeUrl, {params: configObj.requestParams})
-        };
+            /**
+             * @ngdoc method
+             * @name DataResource#remove
+             *
+             * @description
+             *
+             * Método para eliminar un elemento a través de una petición al api REST.
+             * La petición http será de tipo DELETE a la url <url base> + <id>.
+             * Internamente utilizará únicamente el campo definido como id del objeto
+             * para realizar la petición.
+             *
+             * @param {object} data Objeto a eliminar.
+             *
+             * @returns {object} Un objeto promise que se resolverá con el elemento
+             * cuando se complete la petición asíncrona al servicio $http.
+             */
+            DataResource.remove = function(data){
+                $log.log('remove class function');
+                $log.log(data);
+                var id = _.isObject(data) ? data.$id() : data;
+                var removeUrl = configuration.url + id;
+                return $http.delete(removeUrl, {params: configuration.requestParams})
+            };
 
-        /**
-         * @ngdoc method
-         * @name DataResource#$remove
-         *
-         * @description
-         *
-         * Método para eliminar un elemento a través de una petición al api REST.
-         * La petición http será de tipo DELETE a la url <url base> + <id>.
-         * Internamente utilizará únicamente el campo definido como id del objeto
-         * para realizar la petición.
-         * La diferencia con el método DataResource#remove es que éste es un método
-         * de instancia, de forma que se pueda invocar directamente sobre un elemento
-         * devuelto previamente por el servicio.
-         *
-         * @returns {object} Un objeto promise que se resolverá con el elemento
-         * cuando se complete la petición asíncrona al servicio $http.
-         */
-        DataResource.prototype.$remove = function(){
-            $log.log('remove instance function');
-            return DataResource.remove(this);
-        };
+            /**
+             * @ngdoc method
+             * @name DataResource#$remove
+             *
+             * @description
+             *
+             * Método para eliminar un elemento a través de una petición al api REST.
+             * La petición http será de tipo DELETE a la url <url base> + <id>.
+             * Internamente utilizará únicamente el campo definido como id del objeto
+             * para realizar la petición.
+             * La diferencia con el método DataResource#remove es que éste es un método
+             * de instancia, de forma que se pueda invocar directamente sobre un elemento
+             * devuelto previamente por el servicio.
+             *
+             * @returns {object} Un objeto promise que se resolverá con el elemento
+             * cuando se complete la petición asíncrona al servicio $http.
+             */
+            DataResource.prototype.$remove = function(){
+                $log.log('remove instance function');
+                return DataResource.remove(this);
+            };
 
-        /**
-         * @ngdoc method
-         * @name DataResource#update
-         *
-         * @description
-         *
-         * Método para realizar una modificación de un elemento a través de una
-         * petición al api REST. La petición http será de tipo PUT a la url
-         * <url base> + <id>.
-         * Hace uso del api $q de promesas de AngularJS para devolver una promesa
-         * en vez del resultado ya que la funcionalidad es asíncrona.
-         *
-         * @param {object} data Objeto con los datos de la modificación.
-         *
-         * @returns {object} Un objeto promise que se resolverá con el elemento
-         * cuando se complete la petición asíncrona. El elemento contendrá los
-         * datos devueltos por el servicio y será un objeto de tipo DataResource.
-         */
-        DataResource.update = function(data){
-            $log.log('update class function');
-            var id = data instanceof DataResource ? data.$id() : data[configObj.idField];
-            var updateUrl = configObj.url + id;
-            var deferred = $q.defer();
-            $http.put(updateUrl, data, {
-                params: configObj.requestParams,
-                //TODO es necesario el content-type?
-                headers: {'Content-Type': 'application/json'}
+            /**
+             * @ngdoc method
+             * @name DataResource#update
+             *
+             * @description
+             *
+             * Método para realizar una modificación de un elemento a través de una
+             * petición al api REST. La petición http será de tipo PUT a la url
+             * <url base> + <id>.
+             * Hace uso del api $q de promesas de AngularJS para devolver una promesa
+             * en vez del resultado ya que la funcionalidad es asíncrona.
+             *
+             * @param {object} data Objeto con los datos de la modificación.
+             *
+             * @returns {object} Un objeto promise que se resolverá con el elemento
+             * cuando se complete la petición asíncrona. El elemento contendrá los
+             * datos devueltos por el servicio y será un objeto de tipo DataResource.
+             */
+            DataResource.update = function(data){
+                $log.log('update class function');
+                var id = data instanceof DataResource ? data.$id() : data[configuration.idField];
+                var updateUrl = configuration.url + id;
+                var deferred = $q.defer();
+                $http.put(updateUrl, data, {
+                    params: configuration.requestParams,
+                    //TODO es necesario el content-type?
+                    headers: {'Content-Type': 'application/json'}
                 }).then(function(result){
-                    var dr = new DataResource(result.data);
-                    deferred.resolve(dr);
-            });
-            return deferred.promise;
-        };
+                        var dr = new DataResource(result.data);
+                        deferred.resolve(dr);
+                    });
+                return deferred.promise;
+            };
 
-        /**
-         * @ngdoc method
-         * @name DataResource#$update
-         *
-         * @description
-         *
-         * Método para realizar una modificación de un elemento a través de una
-         * petición al api REST. La petición http será de tipo PUT a la url
-         * <url base> + <id>.
-         * Hace uso del api $q de promesas de AngularJS para devolver una promesa
-         * en vez del resultado ya que la funcionalidad es asíncrona.
-         * La diferencia con el método DataResource#update es que éste es un método
-         * de instancia, de forma que se pueda invocar directamente sobre un elemento
-         * devuelto previamente por el servicio.
-         *
-         * @returns {object} Un objeto promise que se resolverá con el elemento
-         * cuando se complete la petición asíncrona. El elemento contendrá los
-         * datos devueltos por el servicio y será un objeto de tipo DataResource.
-         */
-        DataResource.prototype.$update = function(){
-            $log.log('update instance function');
-            return DataResource.update(this);
-        };
+            /**
+             * @ngdoc method
+             * @name DataResource#$update
+             *
+             * @description
+             *
+             * Método para realizar una modificación de un elemento a través de una
+             * petición al api REST. La petición http será de tipo PUT a la url
+             * <url base> + <id>.
+             * Hace uso del api $q de promesas de AngularJS para devolver una promesa
+             * en vez del resultado ya que la funcionalidad es asíncrona.
+             * La diferencia con el método DataResource#update es que éste es un método
+             * de instancia, de forma que se pueda invocar directamente sobre un elemento
+             * devuelto previamente por el servicio.
+             *
+             * @returns {object} Un objeto promise que se resolverá con el elemento
+             * cuando se complete la petición asíncrona. El elemento contendrá los
+             * datos devueltos por el servicio y será un objeto de tipo DataResource.
+             */
+            DataResource.prototype.$update = function(){
+                $log.log('update instance function');
+                return DataResource.update(this);
+            };
 
-        // se invoca de nuevo a la función para que el servicio DataResource
-        // tenga los mismos métodos que el provider sin duplicar el código.
-        configurador.configurar(DataResource, configObj);
+            /**
+             * @ngdoc method
+             * @name DataResource#getInstanceWithSpecificConfig
+             *
+             * @description
+             *
+             * Permite crear una instancia del servicio de datos con una configuración
+             * específica distinta a la global donde pueden cambiar cosas como la url
+             * a la que apunta para la recuperación de datos, los parámetros para las
+             * peticiones, etc...
+             * La base será la configuración general por lo que los campos no
+             * sobreescritos guardarán los valores previos.
+             *
+             * @returns {object} Una instancia de DataResource con la nueva
+             * configuración.
+             */
+            DataResource.getInstanceWithSpecificConfig = function(specificConfigFunct){
+                var specificConfig = angular.copy(configuration);
+                configurador.configurar(specificConfig, specificConfig);
+                specificConfigFunct(specificConfig);
+                return createServiceInstance(specificConfig);
+            }
 
-        return DataResource;
+            // se invoca de nuevo a la función para que el servicio DataResource
+            // tenga los mismos métodos que el provider sin duplicar el código.
+            configurador.configurar(DataResource, configuration);
+
+            return DataResource;
+        }
+
+        return createServiceInstance(configObj);
     }];
 
 });

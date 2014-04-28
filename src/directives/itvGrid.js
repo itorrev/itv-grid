@@ -11,7 +11,6 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
         scope: {},
         templateUrl: 'itvGridTemplates/src/templates/itvGrid.html',
         link: function(scope, element, attrs){
-            DataResource.setUrl(attrs.itvGridUrl);
             scope.title = attrs.itvGridTitle || 'Data Grid';
             scope.itemsPorPagina = 10;
             scope.itemsTotales = 0;
@@ -36,8 +35,14 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 });
             };
 
+            var specificConfigDataService = {};
+
+            if(attrs.itvGridUrl && (attrs.itvGridUrl !== DataResource.getUrl())){
+                specificConfigDataService.url = attrs.itvGridUrl;
+            }
+
             if(attrs.itvGridId){
-                DataResource.setIdField(attrs.itvGridId);
+                specificConfigDataService.id = attrs.itvGridId;
             }
 
             if(attrs.itvGridParamName && attrs.itvGridParamValue){
@@ -45,9 +50,10 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 var value = attrs.itvGridParamValue;
                 var params = {};
                 params[key] = value;
-                console.log(JSON.stringify(params));
-                DataResource.setRequestParams(params);
+                specificConfigDataService.params = params;
             };
+
+            var dataResourceInstance = UtilsService.getSpecificDataService(specificConfigDataService);
 
             scope.setOrderBy = function(header){
                 console.log('ordenando by ' + header);
@@ -71,12 +77,12 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
 
             scope.reloadData = function(){
                 scope.clearEditMode();
-                DataResource.query().then(function(data){
+                dataResourceInstance.query().then(function(data){
                     console.log(data);
                     scope.data = data;
                     scope.filteredData = data;
                     var baseHeaders = scope.paramHeaders.length > 0 ? scope.paramHeaders : _.pairs(data[0]);
-                    scope.headers = UtilsService.createHeaders(baseHeaders, DataResource.getNotEditableFields(), scope.hiddenColumns);
+                    scope.headers = UtilsService.createHeaders(baseHeaders, dataResourceInstance.getNotEditableFields(), scope.hiddenColumns);
                     scope.itemsTotales = scope.filteredData.length;
                     scope.cambioPagina(1);
                     scope.searchFilter = '';
@@ -100,7 +106,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.insertData = function(){
-                DataResource.save(scope.insertRow).then(function(){
+                dataResourceInstance.save(scope.insertRow).then(function(){
                     scope.insertRow = {};
                     scope.insertMode = false;
                     scope.reloadData();
@@ -119,7 +125,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.checkDisabledField = function(fieldName){
-                return _.contains(DataResource.getNotEditableFields(), fieldName);
+                return _.contains(dataResourceInstance.getNotEditableFields(), fieldName);
             };
 
             scope.clearEditMode = function(){

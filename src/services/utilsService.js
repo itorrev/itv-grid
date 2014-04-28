@@ -8,7 +8,7 @@
  * evitando duplicidades.
  *
  */
-var utilsServiceModule = angular.module('itvUtilsService', []);
+var utilsServiceModule = angular.module('itvUtilsService', ['itvDataResource']);
 
 /**
  * @ngdoc object
@@ -18,7 +18,7 @@ var utilsServiceModule = angular.module('itvUtilsService', []);
  * Contiene métodos reutilizables para su uso en distintas partes del
  * código del grid de datos.
  */
-utilsServiceModule.factory('UtilsService', function(filterFilter){
+utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
     var UtilsService = {};
 
     /**
@@ -232,6 +232,26 @@ utilsServiceModule.factory('UtilsService', function(filterFilter){
             'initIndex': initIndex,
             'endIndex': endIndex,
             'totalItems': totalItems
+        }
+    };
+
+    UtilsService.getSpecificDataService = function(specificConfigDataService){
+        if(_.isEmpty(specificConfigDataService)){
+            return DataResource;
+        } else {
+            console.log(JSON.stringify(specificConfigDataService));
+            var specificConfigFunction = function(configurer){
+                if(specificConfigDataService.id){
+                    configurer.setIdField(specificConfigDataService.id);
+                }
+                if(specificConfigDataService.params){
+                    configurer.setRequestParams(specificConfigDataService.params);
+                }
+                if(specificConfigDataService.url){
+                    configurer.setUrl(specificConfigDataService.url);
+                }
+            };
+            return DataResource.getInstanceWithSpecificConfig(specificConfigFunction);
         }
     };
 
