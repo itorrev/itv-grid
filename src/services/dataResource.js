@@ -152,9 +152,16 @@ dataResourceModule.provider('DataResource', function(){
                 angular.extend(this, data);
             };
 
-            // método para obtener el id de un elemento.
+            // método para obtener el id de un elemento. Se contempla la posibilidad
+            // de que sea compuesto.
+            // Por ejemplo mongolab guarda el id de los elementos en el campo $oid
+            // dentro del campo _id que es un objeto.
             var getId = function(data){
-                return data[configuration.idField];
+                var field = data;
+                angular.forEach(configuration.idField.split('.'), function(value, key){
+                    field = field[value];
+                });
+                return field;
             };
 
             /**
@@ -305,7 +312,6 @@ dataResourceModule.provider('DataResource', function(){
              */
             DataResource.remove = function(data){
                 $log.log('remove class function');
-                $log.log(data);
                 var id = _.isObject(data) ? data.$id() : data;
                 var removeUrl = configuration.url + id;
                 return $http.delete(removeUrl, {params: configuration.requestParams})
@@ -353,8 +359,9 @@ dataResourceModule.provider('DataResource', function(){
              */
             DataResource.update = function(data){
                 $log.log('update class function');
-                var id = data instanceof DataResource ? data.$id() : data[configuration.idField];
+                var id = data instanceof DataResource ? data.$id() : getId(data);
                 var updateUrl = configuration.url + id;
+                $log.log(JSON.stringify(updateUrl));
                 var deferred = $q.defer();
                 $http.put(updateUrl, data, {
                     params: configuration.requestParams,
