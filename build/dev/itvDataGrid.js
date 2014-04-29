@@ -22,6 +22,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.advancedFilterActive = false;
             scope.advancedFilterObj = {};
             scope.paramHeaders = [];
+            scope.notEditableFields = [];
 
             if(attrs.itvGridColumns){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
@@ -55,6 +56,14 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
 
             var dataResourceInstance = UtilsService.getSpecificDataService(specificConfigDataService);
 
+            scope.notEditableFields.push(dataResourceInstance.getIdField());
+
+            if(attrs.itvGridNoteditable){
+                angular.forEach(attrs.itvGridNoteditable.split(','), function(value, key){
+                    scope.notEditableFields.push(value);
+                });
+            };
+
             scope.setOrderBy = function(header){
                 console.log('ordenando by ' + header);
                 scope.clearEditMode();
@@ -82,7 +91,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     scope.data = data;
                     scope.filteredData = data;
                     var baseHeaders = scope.paramHeaders.length > 0 ? scope.paramHeaders : _.pairs(data[0]);
-                    scope.headers = UtilsService.createHeaders(baseHeaders, dataResourceInstance.getNotEditableFields(), scope.hiddenColumns);
+                    scope.headers = UtilsService.createHeaders(baseHeaders, scope.notEditableFields, scope.hiddenColumns);
                     scope.itemsTotales = scope.filteredData.length;
                     scope.cambioPagina(1);
                     scope.searchFilter = '';
@@ -125,7 +134,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.checkDisabledField = function(fieldName){
-                return _.contains(dataResourceInstance.getNotEditableFields(), fieldName);
+                return _.contains(scope.notEditableFields, fieldName);
             };
 
             scope.clearEditMode = function(){
@@ -781,6 +790,7 @@ dataResourceModule.provider('DataResource', function(){
     configurador.configurar = function(obj, config){
 
         config.url = angular.isUndefined(config.url)? "" : config.url;
+
         /**
          * @ngdoc method
          * @name DataResource#setUrl (DataResourceProvider#setUrl)
@@ -802,6 +812,17 @@ dataResourceModule.provider('DataResource', function(){
             }
         };
 
+        /**
+         * @ngdoc method
+         * @name DataResource#getUrl (DataResourceProvider#getUrl)
+         *
+         * @description
+         *
+         * Devuelve la Url base del servicio REST con el que interactuar.
+         *
+         * @returns {string} Url base del api REST cuyos datos se mostrarán.
+         *
+         */
         obj.getUrl = function(){
             return config.url;
         }
@@ -827,6 +848,21 @@ dataResourceModule.provider('DataResource', function(){
             }
         };
 
+        /**
+         * @ngdoc method
+         * @name DataResource#getIdField (DataResourceProvider#getIdField)
+         *
+         * @description
+         *
+         * Devuelve el campo que actuará como identificador de los elementos.
+         *
+         * @returns {string} identificador de los elementos.
+         *
+         */
+        obj.getIdField = function(){
+            return config.idField;
+        }
+
         config.requestParams = config.requestParams || {};
 
         /**
@@ -845,25 +881,6 @@ dataResourceModule.provider('DataResource', function(){
             if(!_.isUndefined(params)){
                 config.requestParams = params;
             }
-        };
-
-        config.notEditableFields = [config.idField];
-
-        //TODO método para establecer los campos no editables
-
-        /**
-         * @ngdoc method
-         * @name DataResource#getNotEditableFields (DataResourceProvider#getNotEditableFields)
-         *
-         * @description
-         *
-         * Obtiene la lista de campos que no se pueden editar. Por defecto el campo
-         * definido como id no será editable.
-         *
-         * @returns {array} Un array de string con los nombres de los campos no editables.
-         */
-        obj.getNotEditableFields = function(){
-            return config.notEditableFields;
         };
     };
 

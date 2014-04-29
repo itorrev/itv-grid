@@ -45,6 +45,7 @@ dataResourceModule.provider('DataResource', function(){
     configurador.configurar = function(obj, config){
 
         config.url = angular.isUndefined(config.url)? "" : config.url;
+
         /**
          * @ngdoc method
          * @name DataResource#setUrl (DataResourceProvider#setUrl)
@@ -66,6 +67,17 @@ dataResourceModule.provider('DataResource', function(){
             }
         };
 
+        /**
+         * @ngdoc method
+         * @name DataResource#getUrl (DataResourceProvider#getUrl)
+         *
+         * @description
+         *
+         * Devuelve la Url base del servicio REST con el que interactuar.
+         *
+         * @returns {string} Url base del api REST cuyos datos se mostrarán.
+         *
+         */
         obj.getUrl = function(){
             return config.url;
         }
@@ -91,6 +103,21 @@ dataResourceModule.provider('DataResource', function(){
             }
         };
 
+        /**
+         * @ngdoc method
+         * @name DataResource#getIdField (DataResourceProvider#getIdField)
+         *
+         * @description
+         *
+         * Devuelve el campo que actuará como identificador de los elementos.
+         *
+         * @returns {string} identificador de los elementos.
+         *
+         */
+        obj.getIdField = function(){
+            return config.idField;
+        }
+
         config.requestParams = config.requestParams || {};
 
         /**
@@ -109,25 +136,6 @@ dataResourceModule.provider('DataResource', function(){
             if(!_.isUndefined(params)){
                 config.requestParams = params;
             }
-        };
-
-        config.notEditableFields = [config.idField];
-
-        //TODO método para establecer los campos no editables
-
-        /**
-         * @ngdoc method
-         * @name DataResource#getNotEditableFields (DataResourceProvider#getNotEditableFields)
-         *
-         * @description
-         *
-         * Obtiene la lista de campos que no se pueden editar. Por defecto el campo
-         * definido como id no será editable.
-         *
-         * @returns {array} Un array de string con los nombres de los campos no editables.
-         */
-        obj.getNotEditableFields = function(){
-            return config.notEditableFields;
         };
     };
 

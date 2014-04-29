@@ -22,6 +22,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.advancedFilterActive = false;
             scope.advancedFilterObj = {};
             scope.paramHeaders = [];
+            scope.notEditableFields = [];
 
             if(attrs.itvGridColumns){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
@@ -55,6 +56,14 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
 
             var dataResourceInstance = UtilsService.getSpecificDataService(specificConfigDataService);
 
+            scope.notEditableFields.push(dataResourceInstance.getIdField());
+
+            if(attrs.itvGridNoteditable){
+                angular.forEach(attrs.itvGridNoteditable.split(','), function(value, key){
+                    scope.notEditableFields.push(value);
+                });
+            };
+
             scope.setOrderBy = function(header){
                 console.log('ordenando by ' + header);
                 scope.clearEditMode();
@@ -82,7 +91,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     scope.data = data;
                     scope.filteredData = data;
                     var baseHeaders = scope.paramHeaders.length > 0 ? scope.paramHeaders : _.pairs(data[0]);
-                    scope.headers = UtilsService.createHeaders(baseHeaders, dataResourceInstance.getNotEditableFields(), scope.hiddenColumns);
+                    scope.headers = UtilsService.createHeaders(baseHeaders, scope.notEditableFields, scope.hiddenColumns);
                     scope.itemsTotales = scope.filteredData.length;
                     scope.cambioPagina(1);
                     scope.searchFilter = '';
@@ -125,7 +134,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.checkDisabledField = function(fieldName){
-                return _.contains(dataResourceInstance.getNotEditableFields(), fieldName);
+                return _.contains(scope.notEditableFields, fieldName);
             };
 
             scope.clearEditMode = function(){

@@ -55,8 +55,6 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
     UtilsService.createHeaders = function(headers, notEditableFields, hiddenColumns){
         var classHeaders = [];
         angular.forEach(headers, function(value, key){
-            console.log(key);
-            console.log(value);
             if(!angular.isArray(value) || (!angular.isObject(value[1]) && !angular.isArray(value[1]))){
                 var nombre = angular.isArray(value) ? value[0] : value;
                 classHeaders.push({
