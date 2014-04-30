@@ -87,7 +87,6 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.reloadData = function(){
                 scope.clearEditMode();
                 dataResourceInstance.query().then(function(data){
-                    console.log(data);
                     scope.data = data;
                     scope.filteredData = data;
                     var baseHeaders = scope.paramHeaders.length > 0 ? scope.paramHeaders : _.pairs(data[0]);
@@ -129,7 +128,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     scope.clearEditMode();
                     editedResource.editMode = !editedResource.editMode;
                     scope.originalEditingRow = editedResource;
-                    angular.copy(editedResource, scope.copiedEditingRow);
+                    angular.copy(_.omit(editedResource, 'editMode'), scope.copiedEditingRow);
                 }
             };
 
