@@ -87,7 +87,6 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.reloadData = function(){
                 scope.clearEditMode();
                 dataResourceInstance.query().then(function(data){
-                    console.log(data);
                     scope.data = data;
                     scope.filteredData = data;
                     var baseHeaders = scope.paramHeaders.length > 0 ? scope.paramHeaders : _.pairs(data[0]);
@@ -129,7 +128,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     scope.clearEditMode();
                     editedResource.editMode = !editedResource.editMode;
                     scope.originalEditingRow = editedResource;
-                    angular.copy(editedResource, scope.copiedEditingRow);
+                    angular.copy(_.omit(editedResource, 'editMode'), scope.copiedEditingRow);
                 }
             };
 
@@ -882,6 +881,31 @@ dataResourceModule.provider('DataResource', function(){
                 config.requestParams = params;
             }
         };
+
+        config.defaultRequestDataTransformer = function(data, idField){
+            return data;
+        };
+
+        config.requestDataTransformer = _.isUndefined(config.requestDataTransformer) ?
+            config.defaultRequestDataTransformer : config.requestDataTransformer;
+
+        /**
+         * @ngdoc method
+         * @name DataResource#setRequestDataTransformer
+         *      (DataResourceProvider#setRequestDataTransformer)
+         *
+         * @description
+         *
+         * Establece la función para manipular el elemento enviado en las peticiones 'update'
+         *
+         * @param {function} requestDataTransformerFunction La función transformadora.
+         *
+         */
+        obj.setRequestDataTransformer = function(requestDataTransformerFunction){
+            if(_.isFunction(requestDataTransformerFunction)){
+                config.requestDataTransformer = requestDataTransformerFunction;
+            }
+        };
     };
 
     configurador.configurar(this, configObj);
@@ -897,9 +921,16 @@ dataResourceModule.provider('DataResource', function(){
                 angular.extend(this, data);
             };
 
-            // método para obtener el id de un elemento.
+            // método para obtener el id de un elemento. Se contempla la posibilidad
+            // de que sea compuesto.
+            // Por ejemplo mongolab guarda el id de los elementos en el campo $oid
+            // dentro del campo _id que es un objeto.
             var getId = function(data){
-                return data[configuration.idField];
+                var field = data;
+                angular.forEach(configuration.idField.split('.'), function(value, key){
+                    field = field[value];
+                });
+                return field;
             };
 
             /**
@@ -1050,7 +1081,6 @@ dataResourceModule.provider('DataResource', function(){
              */
             DataResource.remove = function(data){
                 $log.log('remove class function');
-                $log.log(data);
                 var id = _.isObject(data) ? data.$id() : data;
                 var removeUrl = configuration.url + id;
                 return $http.delete(removeUrl, {params: configuration.requestParams})
@@ -1087,6 +1117,9 @@ dataResourceModule.provider('DataResource', function(){
              * Método para realizar una modificación de un elemento a través de una
              * petición al api REST. La petición http será de tipo PUT a la url
              * <url base> + <id>.
+             * El objeto a enviar en la petición se pasa por una función transformadora
+             * para permitir modificar los datos a enviar (por ejemplo MongoLab requiere
+             * que el campo id no se envíe).
              * Hace uso del api $q de promesas de AngularJS para devolver una promesa
              * en vez del resultado ya que la funcionalidad es asíncrona.
              *
@@ -1098,10 +1131,11 @@ dataResourceModule.provider('DataResource', function(){
              */
             DataResource.update = function(data){
                 $log.log('update class function');
-                var id = data instanceof DataResource ? data.$id() : data[configuration.idField];
+                var id = data instanceof DataResource ? data.$id() : getId(data);
                 var updateUrl = configuration.url + id;
+                var transformedData = configuration.requestDataTransformer(data, configuration.idField);
                 var deferred = $q.defer();
-                $http.put(updateUrl, data, {
+                $http.put(updateUrl, transformedData, {
                     params: configuration.requestParams,
                     //TODO es necesario el content-type?
                     headers: {'Content-Type': 'application/json'}
@@ -1266,8 +1300,6 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
     UtilsService.createHeaders = function(headers, notEditableFields, hiddenColumns){
         var classHeaders = [];
         angular.forEach(headers, function(value, key){
-            console.log(key);
-            console.log(value);
             if(!angular.isArray(value) || (!angular.isObject(value[1]) && !angular.isArray(value[1]))){
                 var nombre = angular.isArray(value) ? value[0] : value;
                 classHeaders.push({
@@ -1446,6 +1478,20 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
         }
     };
 
+    /**
+     * @ngdoc method
+     * @name UtilsService#getSpecificDataService
+     *
+     * @description
+     *
+     * Crea una instancia del servicio de datos con una configuración específica
+     *
+     * @param {object} specificConfigDataService Objeto con la configuración
+     * específica del servicio de datos
+     *
+     * @returns {object} un objeto DataResource configurado de acuerdo al
+     * parámetro de entrada.
+     */
     UtilsService.getSpecificDataService = function(specificConfigDataService){
         if(_.isEmpty(specificConfigDataService)){
             return DataResource;
@@ -1463,6 +1509,30 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
                 }
             };
             return DataResource.getInstanceWithSpecificConfig(specificConfigFunction);
+        }
+    };
+
+    /**
+     * @ngdoc method
+     * @name UtilsService#getStripIdOnUpdateTransformer
+     *
+     * @description
+     *
+     * Crea una función para convertir en undefined el valor del campo definido
+     * como id del elemento recibido como parámetro.
+     *
+     * @param {string} idField Campo id de los elementos manejados por el
+     * servicio de datos que utilizará la funcion transformadora.
+     *
+     * @returns {function} función transformadora que se encargará de eliminar
+     * el campo id del objeto recibido como parámetro.
+     */
+    UtilsService.getStripIdOnUpdateTransformer = function(){
+        return function(data, idField){
+            var id = idField.split('.')[0];
+            var strippedIdObj = {};
+            strippedIdObj[id] = undefined;
+            return angular.extend({}, data, strippedIdObj);
         }
     };
 

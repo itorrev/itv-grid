@@ -233,6 +233,20 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
         }
     };
 
+    /**
+     * @ngdoc method
+     * @name UtilsService#getSpecificDataService
+     *
+     * @description
+     *
+     * Crea una instancia del servicio de datos con una configuración específica
+     *
+     * @param {object} specificConfigDataService Objeto con la configuración
+     * específica del servicio de datos
+     *
+     * @returns {object} un objeto DataResource configurado de acuerdo al
+     * parámetro de entrada.
+     */
     UtilsService.getSpecificDataService = function(specificConfigDataService){
         if(_.isEmpty(specificConfigDataService)){
             return DataResource;
@@ -250,6 +264,30 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
                 }
             };
             return DataResource.getInstanceWithSpecificConfig(specificConfigFunction);
+        }
+    };
+
+    /**
+     * @ngdoc method
+     * @name UtilsService#getStripIdOnUpdateTransformer
+     *
+     * @description
+     *
+     * Crea una función para convertir en undefined el valor del campo definido
+     * como id del elemento recibido como parámetro.
+     *
+     * @param {string} idField Campo id de los elementos manejados por el
+     * servicio de datos que utilizará la funcion transformadora.
+     *
+     * @returns {function} función transformadora que se encargará de eliminar
+     * el campo id del objeto recibido como parámetro.
+     */
+    UtilsService.getStripIdOnUpdateTransformer = function(){
+        return function(data, idField){
+            var id = idField.split('.')[0];
+            var strippedIdObj = {};
+            strippedIdObj[id] = undefined;
+            return angular.extend({}, data, strippedIdObj);
         }
     };
 

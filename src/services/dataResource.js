@@ -137,6 +137,31 @@ dataResourceModule.provider('DataResource', function(){
                 config.requestParams = params;
             }
         };
+
+        config.defaultRequestDataTransformer = function(data, idField){
+            return data;
+        };
+
+        config.requestDataTransformer = _.isUndefined(config.requestDataTransformer) ?
+            config.defaultRequestDataTransformer : config.requestDataTransformer;
+
+        /**
+         * @ngdoc method
+         * @name DataResource#setRequestDataTransformer
+         *      (DataResourceProvider#setRequestDataTransformer)
+         *
+         * @description
+         *
+         * Establece la función para manipular el elemento enviado en las peticiones 'update'
+         *
+         * @param {function} requestDataTransformerFunction La función transformadora.
+         *
+         */
+        obj.setRequestDataTransformer = function(requestDataTransformerFunction){
+            if(_.isFunction(requestDataTransformerFunction)){
+                config.requestDataTransformer = requestDataTransformerFunction;
+            }
+        };
     };
 
     configurador.configurar(this, configObj);
@@ -348,6 +373,9 @@ dataResourceModule.provider('DataResource', function(){
              * Método para realizar una modificación de un elemento a través de una
              * petición al api REST. La petición http será de tipo PUT a la url
              * <url base> + <id>.
+             * El objeto a enviar en la petición se pasa por una función transformadora
+             * para permitir modificar los datos a enviar (por ejemplo MongoLab requiere
+             * que el campo id no se envíe).
              * Hace uso del api $q de promesas de AngularJS para devolver una promesa
              * en vez del resultado ya que la funcionalidad es asíncrona.
              *
@@ -361,9 +389,9 @@ dataResourceModule.provider('DataResource', function(){
                 $log.log('update class function');
                 var id = data instanceof DataResource ? data.$id() : getId(data);
                 var updateUrl = configuration.url + id;
-                $log.log(JSON.stringify(updateUrl));
+                var transformedData = configuration.requestDataTransformer(data, configuration.idField);
                 var deferred = $q.defer();
-                $http.put(updateUrl, data, {
+                $http.put(updateUrl, transformedData, {
                     params: configuration.requestParams,
                     //TODO es necesario el content-type?
                     headers: {'Content-Type': 'application/json'}
