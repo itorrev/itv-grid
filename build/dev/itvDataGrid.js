@@ -52,7 +52,15 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 var params = {};
                 params[key] = value;
                 specificConfigDataService.params = params;
-            };
+            }
+
+            if(attrs.itvGridStripUpdateid){
+                if(attrs.itvGridStripUpdateid === 'true'){
+                    specificConfigDataService.requestDataTx = UtilsService.getStripIdOnUpdateTransformer();
+                } else if(attrs.itvGridStripUpdateid === 'false'){
+                    specificConfigDataService.requestDataTx = UtilsService.getSimpleTransformer();
+                }
+            }
 
             var dataResourceInstance = UtilsService.getSpecificDataService(specificConfigDataService);
 
@@ -62,7 +70,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 angular.forEach(attrs.itvGridNoteditable.split(','), function(value, key){
                     scope.notEditableFields.push(value);
                 });
-            };
+            }
 
             scope.setOrderBy = function(header){
                 console.log('ordenando by ' + header);
@@ -1134,6 +1142,9 @@ dataResourceModule.provider('DataResource', function(){
                 var id = data instanceof DataResource ? data.$id() : getId(data);
                 var updateUrl = configuration.url + id;
                 var transformedData = configuration.requestDataTransformer(data, configuration.idField);
+//                $log.log(JSON.stringify(updateUrl));
+//                $log.log(JSON.stringify(transformedData));
+//                $log.log(configuration.requestDataTransformer);
                 var deferred = $q.defer();
                 $http.put(updateUrl, transformedData, {
                     params: configuration.requestParams,
@@ -1507,6 +1518,9 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
                 if(specificConfigDataService.url){
                     configurer.setUrl(specificConfigDataService.url);
                 }
+                if(specificConfigDataService.requestDataTx){
+                    configurer.setRequestDataTransformer(specificConfigDataService.requestDataTx);
+                }
             };
             return DataResource.getInstanceWithSpecificConfig(specificConfigFunction);
         }
@@ -1518,11 +1532,8 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
      *
      * @description
      *
-     * Crea una función para convertir en undefined el valor del campo definido
+     * Crea una función para convertir en undefined el valor del campo recibido
      * como id del elemento recibido como parámetro.
-     *
-     * @param {string} idField Campo id de los elementos manejados por el
-     * servicio de datos que utilizará la funcion transformadora.
      *
      * @returns {function} función transformadora que se encargará de eliminar
      * el campo id del objeto recibido como parámetro.
@@ -1533,6 +1544,24 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
             var strippedIdObj = {};
             strippedIdObj[id] = undefined;
             return angular.extend({}, data, strippedIdObj);
+        }
+    };
+
+    /**
+     * @ngdoc method
+     * @name UtilsService#getSimpleTransformer
+     *
+     * @description
+     *
+     * Crea una función transformadora por defecto que no modificará el
+     * objeto recibido como parámetro.
+     *
+     * @returns {function} función transformadora que devolverá el
+     * elemento recibido como parámetro.
+     */
+    UtilsService.getSimpleTransformer = function(){
+        return function(data, idField){
+            return data;
         }
     };
 

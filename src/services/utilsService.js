@@ -62,7 +62,7 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
                     isEditable: !_.contains(notEditableFields, nombre),
                     isHidden: _.contains(hiddenColumns, nombre)
                 });
-            };
+            }
         });
         return classHeaders;
     };
@@ -262,6 +262,9 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
                 if(specificConfigDataService.url){
                     configurer.setUrl(specificConfigDataService.url);
                 }
+                if(specificConfigDataService.requestDataTx){
+                    configurer.setRequestDataTransformer(specificConfigDataService.requestDataTx);
+                }
             };
             return DataResource.getInstanceWithSpecificConfig(specificConfigFunction);
         }
@@ -273,11 +276,8 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
      *
      * @description
      *
-     * Crea una función para convertir en undefined el valor del campo definido
+     * Crea una función para convertir en undefined el valor del campo recibido
      * como id del elemento recibido como parámetro.
-     *
-     * @param {string} idField Campo id de los elementos manejados por el
-     * servicio de datos que utilizará la funcion transformadora.
      *
      * @returns {function} función transformadora que se encargará de eliminar
      * el campo id del objeto recibido como parámetro.
@@ -288,6 +288,24 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
             var strippedIdObj = {};
             strippedIdObj[id] = undefined;
             return angular.extend({}, data, strippedIdObj);
+        }
+    };
+
+    /**
+     * @ngdoc method
+     * @name UtilsService#getSimpleTransformer
+     *
+     * @description
+     *
+     * Crea una función transformadora por defecto que no modificará el
+     * objeto recibido como parámetro.
+     *
+     * @returns {function} función transformadora que devolverá el
+     * elemento recibido como parámetro.
+     */
+    UtilsService.getSimpleTransformer = function(){
+        return function(data, idField){
+            return data;
         }
     };
 

@@ -28,13 +28,13 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
                     scope.paramHeaders.push(value);
                 });
-            };
+            }
 
             if(attrs.itvGridHide){
                 angular.forEach(attrs.itvGridHide.split(','), function(value, key){
                     scope.hiddenColumns.push(value);
                 });
-            };
+            }
 
             var specificConfigDataService = {};
 
@@ -52,7 +52,15 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 var params = {};
                 params[key] = value;
                 specificConfigDataService.params = params;
-            };
+            }
+
+            if(attrs.itvGridStripUpdateid){
+                if(attrs.itvGridStripUpdateid === 'true'){
+                    specificConfigDataService.requestDataTx = UtilsService.getStripIdOnUpdateTransformer();
+                } else if(attrs.itvGridStripUpdateid === 'false'){
+                    specificConfigDataService.requestDataTx = UtilsService.getSimpleTransformer();
+                }
+            }
 
             var dataResourceInstance = UtilsService.getSpecificDataService(specificConfigDataService);
 
@@ -62,7 +70,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 angular.forEach(attrs.itvGridNoteditable.split(','), function(value, key){
                     scope.notEditableFields.push(value);
                 });
-            };
+            }
 
             scope.setOrderBy = function(header){
                 console.log('ordenando by ' + header);
