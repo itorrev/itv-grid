@@ -226,6 +226,10 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
             endIndex = totalItems;
         }
 
+        if(initIndex > endIndex){
+            initIndex = endIndex;
+        }
+
         return {
             'initIndex': initIndex,
             'endIndex': endIndex,
