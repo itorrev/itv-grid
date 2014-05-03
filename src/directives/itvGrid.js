@@ -98,7 +98,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     scope.data = data;
                     scope.filteredData = data;
                     var baseHeaders = scope.paramHeaders.length > 0 ? scope.paramHeaders : _.pairs(data[0]);
-                    scope.headers = UtilsService.createHeaders(baseHeaders, scope.notEditableFields, scope.hiddenColumns);
+                    scope.headers = UtilsService.createHeaders(baseHeaders, scope.notEditableFields, scope.hiddenColumns, dataResourceInstance.getIdField());
                     scope.itemsTotales = scope.filteredData.length;
                     scope.cambioPagina(1);
                     scope.searchFilter = '';

@@ -52,7 +52,7 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
      * oculto y si es editable.
      *
      */
-    UtilsService.createHeaders = function(headers, notEditableFields, hiddenColumns){
+    UtilsService.createHeaders = function(headers, notEditableFields, hiddenColumns, idField){
         var classHeaders = [];
         angular.forEach(headers, function(value, key){
             if(!angular.isArray(value) || (!angular.isObject(value[1]) && !angular.isArray(value[1]))){
@@ -60,7 +60,8 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
                 classHeaders.push({
                     name: nombre,
                     isEditable: !_.contains(notEditableFields, nombre),
-                    isHidden: _.contains(hiddenColumns, nombre)
+                    isHidden: _.contains(hiddenColumns, nombre),
+                    isInsertable: nombre !== idField
                 });
             }
         });

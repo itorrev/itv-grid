@@ -16,7 +16,7 @@
             <tbody>
             <tr ng-show="insertMode">
                 <td ng-repeat="header in headers" ng-hide="header.isHidden" class="itvFade">
-                    <div ng-show="header.isEditable"><input class="form-control" type="text" ng-model="insertRow[header.name]"></div>
+                    <div ng-show="header.isInsertable"><input class="form-control" type="text" ng-model="insertRow[header.name]"></div>
                 </td>
                 <td>
                     <div class="btn-group">

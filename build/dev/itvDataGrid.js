@@ -98,7 +98,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     scope.data = data;
                     scope.filteredData = data;
                     var baseHeaders = scope.paramHeaders.length > 0 ? scope.paramHeaders : _.pairs(data[0]);
-                    scope.headers = UtilsService.createHeaders(baseHeaders, scope.notEditableFields, scope.hiddenColumns);
+                    scope.headers = UtilsService.createHeaders(baseHeaders, scope.notEditableFields, scope.hiddenColumns, dataResourceInstance.getIdField());
                     scope.itemsTotales = scope.filteredData.length;
                     scope.cambioPagina(1);
                     scope.searchFilter = '';
@@ -1309,15 +1309,20 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
      * oculto y si es editable.
      *
      */
-    UtilsService.createHeaders = function(headers, notEditableFields, hiddenColumns){
+    UtilsService.createHeaders = function(headers, notEditableFields, hiddenColumns, idField){
         var classHeaders = [];
         angular.forEach(headers, function(value, key){
             if(!angular.isArray(value) || (!angular.isObject(value[1]) && !angular.isArray(value[1]))){
                 var nombre = angular.isArray(value) ? value[0] : value;
+                console.log('nombre: ' + nombre + ' idField: ' + idField);
+                console.log('nombre es string? ' + _.isString(nombre));
+                console.log('idfield es string? ' + _.isString(idField));
+                console.log('es distinto? ' + (nombre !== idField));
                 classHeaders.push({
                     name: nombre,
                     isEditable: !_.contains(notEditableFields, nombre),
-                    isHidden: _.contains(hiddenColumns, nombre)
+                    isHidden: _.contains(hiddenColumns, nombre),
+                    isInsertable: nombre !== idField
                 });
             }
         });
@@ -1781,7 +1786,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\" class=\"itvFade\">\r" +
     "\n" +
-    "                    <div ng-show=\"header.isEditable\"><input class=\"form-control\" type=\"text\" ng-model=\"insertRow[header.name]\"></div>\r" +
+    "                    <div ng-show=\"header.isInsertable\"><input class=\"form-control\" type=\"text\" ng-model=\"insertRow[header.name]\"></div>\r" +
     "\n" +
     "                </td>\r" +
     "\n" +

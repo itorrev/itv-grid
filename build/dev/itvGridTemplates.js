@@ -124,7 +124,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\" class=\"itvFade\">\r" +
     "\n" +
-    "                    <div ng-show=\"header.isEditable\"><input class=\"form-control\" type=\"text\" ng-model=\"insertRow[header.name]\"></div>\r" +
+    "                    <div ng-show=\"header.isInsertable\"><input class=\"form-control\" type=\"text\" ng-model=\"insertRow[header.name]\"></div>\r" +
     "\n" +
     "                </td>\r" +
     "\n" +
