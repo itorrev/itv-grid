@@ -10,7 +10,7 @@
                     <i ng-class="{'fa-sort-asc': orderBy.asc, 'fa-sort-desc': !orderBy.asc}" ng-show="orderBy.headerName == header.name" class="fa rightFloater"></i>
                     <i class="fa fa-sort rightFloater" ng-show="orderBy.headerName != header.name"></i>
                 </th>
-                <th class="col-xs-1">Action</th>
+                <th class="col-xs-1" itv-message="table.header.action"></th>
             </tr>
             </thead>
             <tbody>

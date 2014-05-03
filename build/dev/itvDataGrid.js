@@ -28,13 +28,13 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
                     scope.paramHeaders.push(value);
                 });
-            };
+            }
 
             if(attrs.itvGridHide){
                 angular.forEach(attrs.itvGridHide.split(','), function(value, key){
                     scope.hiddenColumns.push(value);
                 });
-            };
+            }
 
             var specificConfigDataService = {};
 
@@ -1252,7 +1252,8 @@ itvMessagesModule.value('itvMessages', {
     'action.btn.edit.tooltip': 'Editar elemento',
     'action.btn.undo.tooltip': 'Deshacer',
     'action.btn.save.tooltip': 'Guardar',
-    'action.btn.clearedit.tooltip': 'Quitar edici&oacute;n'
+    'action.btn.clearedit.tooltip': 'Quitar edici&oacute;n',
+    'table.header.action': 'Acci&oacute;n'
 });
 /**
  * @ngdoc module
@@ -1318,7 +1319,7 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
                     isEditable: !_.contains(notEditableFields, nombre),
                     isHidden: _.contains(hiddenColumns, nombre)
                 });
-            };
+            }
         });
         return classHeaders;
     };
@@ -1480,6 +1481,10 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
         var endIndex = initIndex - 1 + (itemsPerPage * 1);
         if(endIndex > totalItems){
             endIndex = totalItems;
+        }
+
+        if(initIndex > endIndex){
+            initIndex = endIndex;
         }
 
         return {
@@ -1764,7 +1769,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </th>\r" +
     "\n" +
-    "                <th class=\"col-xs-1\">Action</th>\r" +
+    "                <th class=\"col-xs-1\" itv-message=\"table.header.action\"></th>\r" +
     "\n" +
     "            </tr>\r" +
     "\n" +

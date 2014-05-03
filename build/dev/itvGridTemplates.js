@@ -112,7 +112,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </th>\r" +
     "\n" +
-    "                <th class=\"col-xs-1\">Action</th>\r" +
+    "                <th class=\"col-xs-1\" itv-message=\"table.header.action\"></th>\r" +
     "\n" +
     "            </tr>\r" +
     "\n" +

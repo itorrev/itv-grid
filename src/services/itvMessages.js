@@ -35,5 +35,6 @@ itvMessagesModule.value('itvMessages', {
     'action.btn.edit.tooltip': 'Editar elemento',
     'action.btn.undo.tooltip': 'Deshacer',
     'action.btn.save.tooltip': 'Guardar',
-    'action.btn.clearedit.tooltip': 'Quitar edici&oacute;n'
+    'action.btn.clearedit.tooltip': 'Quitar edici&oacute;n',
+    'table.header.action': 'Acci&oacute;n'
 });
