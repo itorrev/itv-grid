@@ -20,6 +20,7 @@
     "underscore": "~1.6.0",
     "bootstrap": "~3.1.1",
     "angular-animate": "~1.2.15",
-    "greensock": "~1.11.6"
+    "greensock": "~1.11.6",
+    "showdown": "~0.3.1"
   }
 }
