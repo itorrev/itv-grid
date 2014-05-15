@@ -124,7 +124,6 @@ module.exports = function(grunt){
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-ngmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-
     grunt.registerTask('builddev', ['ngtemplates:dev', 'concat:dev', 'bowercopy:builddev']);
     grunt.registerTask('buildprod', ['ngtemplates:prod', 'concat:prod', 'bowercopy:buildprod', 'ngmin:prod', 'uglify:buildprod', 'clean:buildprod']);
 };

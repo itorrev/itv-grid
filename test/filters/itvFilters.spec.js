@@ -42,8 +42,8 @@ describe('itvFilters', function(){
     describe('messages filter', function(){
         it('should return message', inject(function(messageFilterFilter, itvMessages){
             expect(messageFilterFilter({})).toEqual({});
-            expect(messageFilterFilter([])).toEqual([]);
             expect(messageFilterFilter('nonexist.key')).toEqual('nonexist.key');
+            expect(messageFilterFilter([])).toEqual([]);
             itvMessages['nonexist.key'] = 'new message';
             expect(messageFilterFilter('nonexist.key')).toEqual('new message');
         }))

@@ -19,8 +19,8 @@ module.exports = function(config) {
         'vendor/angular-animate/angular-animate.js',
         'vendor/underscore/underscore.js',
         'vendor/angular-mocks/angular-mocks.js',
-        'src/**/*.js',
-        'test/**/*.js'
+        'test/**/*.js',
+        'src/**/*.js'
     ],
 
 
