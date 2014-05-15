@@ -23,7 +23,8 @@ module.exports = function(grunt){
                     'underscore/underscore.js': 'bower_components/underscore/underscore.js',
                     'greensock/TweenLite.min.js': 'bower_components/greensock/src/minified/TweenLite.min.js',
                     'greensock/TweenMax.min.js': 'bower_components/greensock/src/minified/TweenMax.min.js',
-                    'showdown/showdown.js': 'bower_components/showdown/compressed/showdown.js'
+                    'showdown/showdown.js': 'bower_components/showdown/compressed/showdown.js',
+                    'angular-mocks/angular-mocks.js': 'bower_components/angular-mocks/angular-mocks.js'
                 }
             },
             builddev: {
