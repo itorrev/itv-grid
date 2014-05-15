@@ -60,7 +60,7 @@ module.exports = function(grunt){
                     prefix: 'itvGridTemplates/',
                     module: 'itvGrid',
                     htmlmin:  {
-                        collapseWhitespace: true
+                        collapseWhitespace: false
                     }
                 },
                 src: ['src/templates/**.html'],
