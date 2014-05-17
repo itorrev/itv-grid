@@ -20,6 +20,7 @@ module.exports = function(config) {
         'vendor/underscore/underscore.js',
         'vendor/jquery/jquery.min.js',
         'vendor/angular-mocks/angular-mocks.js',
+        'vendor/showdown/showdown.js',
         'test/**/*.js',
         'src/**/*.js'
     ],
