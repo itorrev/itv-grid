@@ -47,6 +47,7 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
      * @param {array} notEditableFields Array con los nombres de las columnas
      * que no permiten su edición.
      * @param {array} hiddenColumns Array con los nombres de cada columna no visible.
+     * @param {string} idField id que no sera modificable en inserciones
      *
      * @returns {array} Array con un objeto por cada columna con su nombre, si está
      * oculto y si es editable.
