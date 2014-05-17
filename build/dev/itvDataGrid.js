@@ -167,6 +167,24 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
         }
     }
 })
+/**
+ * Created by itorrev on 4/04/14.
+ */
+var markdownModule = angular.module('itvMarkdownModule', []);
+
+markdownModule.directive('itvMarkdown', function(){
+    var converter = new Showdown.converter();
+    return {
+        restrict: 'E',
+        replace: true,
+        link: function(scope, element, attrs){
+            var convertedText = converter.makeHtml(element.text());
+            element.html(convertedText);
+        }
+    }
+});
+
+
 'use strict';
 
 /**
@@ -216,6 +234,7 @@ itvUtilDirectivesModule.directive('itvCheckboxlist', function($log){
             };
 
             var viewToModel = function(){
+                console.log('viewToModel ' + scope.value);
                 var checked = elem.prop('checked');
                 var index = scope.list.indexOf(scope.value);
                 if(checked && index == -1){
@@ -226,8 +245,15 @@ itvUtilDirectivesModule.directive('itvCheckboxlist', function($log){
             };
 
             elem.bind('change', function(){
+                console.log('ha cambiado ' + scope.value);
                 scope.$apply(viewToModel());
             });
+
+            elem.bind('click', function(){
+                console.log('ha cambiado click ' + scope.value);
+                scope.$apply(viewToModel());
+            });
+
             scope.$watch('list', modelToView, true);
         }
     }
@@ -1142,9 +1168,6 @@ dataResourceModule.provider('DataResource', function(){
                 var id = data instanceof DataResource ? data.$id() : getId(data);
                 var updateUrl = configuration.url + id;
                 var transformedData = configuration.requestDataTransformer(data, configuration.idField);
-//                $log.log(JSON.stringify(updateUrl));
-//                $log.log(JSON.stringify(transformedData));
-//                $log.log(configuration.requestDataTransformer);
                 var deferred = $q.defer();
                 $http.put(updateUrl, transformedData, {
                     params: configuration.requestParams,
@@ -1314,10 +1337,6 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
         angular.forEach(headers, function(value, key){
             if(!angular.isArray(value) || (!angular.isObject(value[1]) && !angular.isArray(value[1]))){
                 var nombre = angular.isArray(value) ? value[0] : value;
-                console.log('nombre: ' + nombre + ' idField: ' + idField);
-                console.log('nombre es string? ' + _.isString(nombre));
-                console.log('idfield es string? ' + _.isString(idField));
-                console.log('es distinto? ' + (nombre !== idField));
                 classHeaders.push({
                     name: nombre,
                     isEditable: !_.contains(notEditableFields, nombre),

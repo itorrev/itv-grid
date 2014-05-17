@@ -59,6 +59,11 @@ itvUtilDirectivesModule.directive('itvCheckboxlist', function($log){
             elem.bind('change', function(){
                 scope.$apply(viewToModel());
             });
+
+            elem.bind('click', function(){
+                scope.$apply(viewToModel());
+            });
+
             scope.$watch('list', modelToView, true);
         }
     }
