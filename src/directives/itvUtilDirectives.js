@@ -193,7 +193,7 @@ itvUtilDirectivesModule.directive('itvMessage', function($interpolate, itvMessag
  */
 itvUtilDirectivesModule.directive('itvTooltipfade', function($timeout){
     return function(scope, elem, attrs){
-        elem.bind('mouseenter', function(){
+        elem.bind('mouseover', function(){
             var timeout = attrs.itvTooltipfade || 2000;
             $timeout(function(){
                 scope.tt_isOpen = false;
