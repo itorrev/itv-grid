@@ -1,10 +1,10 @@
 /**
  * Created by itorrev on 4/04/14.
  */
-ddescribe('itvMarkdown', function(){
+describe('itvMarkdown', function(){
     beforeEach(module('itvMarkdownModule'));
 
-    var parent, scope, $rootScope, $compile, element;
+    var scope, $rootScope, $compile, element;
     beforeEach(inject(function(_$compile_, _$rootScope_){
         $rootScope = _$rootScope_;
         $compile = _$compile_;
