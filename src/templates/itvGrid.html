@@ -29,12 +29,12 @@
                     </div>
                 </td>
             </tr>
-            <tr ng-repeat="row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina">
+            <tr ng-repeat-start="row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina" ng-click="addDetailIndex($index)">
                 <td ng-repeat="header in headers" ng-hide="header.isHidden"  class="itvFade">
                     <div ng-show="row.editMode == null || row.editMode == false || !header.isEditable">{{ row[header.name] }}</div>
                     <div ng-show="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="copiedEditingRow[header.name]"></div>
                 </td>
-                <td ng-show="allowCUD">
+                <td ng-if="allowCUD">
                     <div class="btn-group" ng-show="row.editMode == null || row.editMode == false">
                         <button class="btn btn-default btn-sm" ng-click="deleteData(row)" itv-tooltipfade tooltip="{{ 'action.btn.delete.tooltip' | messageFilter }}">
                             <i class="fa fa-trash-o fa-lg"></i>
@@ -52,6 +52,15 @@
                             <i class="fa fa-save fa-lg"></i>
                         </button>
                     </div>
+                </td>
+            </tr>
+            <tr ng-repeat-end="" ng-if="masterDetailActive && (detailIndex == $index)">
+                <td colspan="100%" class="noHover">
+                   <div>
+                       <ul>
+                           <li ng-repeat="header in headers">{{ row[header.name] }}</li>
+                       </ul>
+                   </div>
                 </td>
             </tr>
             </tbody>

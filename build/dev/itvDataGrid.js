@@ -168,6 +168,10 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 scope.itemsTotales = scope.filteredData.length;
             };
 
+            scope.addDetailIndex = function(index){
+                scope.detailIndex = index == scope.detailIndex ? -1 : index;
+            };
+
             scope.reloadData();
         }
     }
@@ -1834,7 +1838,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </tr>\r" +
     "\n" +
-    "            <tr ng-repeat=\"row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina\">\r" +
+    "            <tr ng-repeat-start=\"row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina\" ng-click=\"addDetailIndex($index)\">\r" +
     "\n" +
     "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\"  class=\"itvFade\">\r" +
     "\n" +
@@ -1844,7 +1848,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </td>\r" +
     "\n" +
-    "                <td ng-show=\"allowCUD\">\r" +
+    "                <td ng-if=\"allowCUD\">\r" +
     "\n" +
     "                    <div class=\"btn-group\" ng-show=\"row.editMode == null || row.editMode == false\">\r" +
     "\n" +
@@ -1879,6 +1883,24 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "                        </button>\r" +
     "\n" +
     "                    </div>\r" +
+    "\n" +
+    "                </td>\r" +
+    "\n" +
+    "            </tr>\r" +
+    "\n" +
+    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && (detailIndex == $index)\">\r" +
+    "\n" +
+    "                <td colspan=\"100%\" class=\"noHover\">\r" +
+    "\n" +
+    "                   <div>\r" +
+    "\n" +
+    "                       <ul>\r" +
+    "\n" +
+    "                           <li ng-repeat=\"header in headers\">{{ row[header.name] }}</li>\r" +
+    "\n" +
+    "                       </ul>\r" +
+    "\n" +
+    "                   </div>\r" +
     "\n" +
     "                </td>\r" +
     "\n" +

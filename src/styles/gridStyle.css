@@ -53,6 +53,10 @@
     border: 0px;
 }
 
+.animated-panel > .table-hover > tbody > tr:hover > td:hover.noHover{
+    background-color: transparent;
+}
+
 /*
 Los siguientes estilos están modificados partiendo de los de bootstrap css para
 permitir la integración correcta entre los elementos panel y table cuando no

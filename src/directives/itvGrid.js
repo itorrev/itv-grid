@@ -168,6 +168,10 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 scope.itemsTotales = scope.filteredData.length;
             };
 
+            scope.addDetailIndex = function(index){
+                scope.detailIndex = index == scope.detailIndex ? -1 : index;
+            };
+
             scope.reloadData();
         }
     }
