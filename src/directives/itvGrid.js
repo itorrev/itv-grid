@@ -23,6 +23,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.advancedFilterObj = {};
             scope.paramHeaders = [];
             scope.notEditableFields = [];
+            scope.allowCUD = false;
 
             if(attrs.itvGridColumns){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
@@ -34,6 +35,10 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 angular.forEach(attrs.itvGridHide.split(','), function(value, key){
                     scope.hiddenColumns.push(value);
                 });
+            }
+
+            if(attrs.itvGridAllowcud === 'true'){
+                scope.allowCUD = true;
             }
 
             var specificConfigDataService = {};

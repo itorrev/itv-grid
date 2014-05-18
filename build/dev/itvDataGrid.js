@@ -23,6 +23,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.advancedFilterObj = {};
             scope.paramHeaders = [];
             scope.notEditableFields = [];
+            scope.allowCUD = false;
 
             if(attrs.itvGridColumns){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
@@ -34,6 +35,10 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 angular.forEach(attrs.itvGridHide.split(','), function(value, key){
                     scope.hiddenColumns.push(value);
                 });
+            }
+
+            if(attrs.itvGridAllowcud === 'true'){
+                scope.allowCUD = true;
             }
 
             var specificConfigDataService = {};
@@ -234,7 +239,6 @@ itvUtilDirectivesModule.directive('itvCheckboxlist', function($log){
             };
 
             var viewToModel = function(){
-                console.log('viewToModel ' + scope.value);
                 var checked = elem.prop('checked');
                 var index = scope.list.indexOf(scope.value);
                 if(checked && index == -1){
@@ -245,12 +249,10 @@ itvUtilDirectivesModule.directive('itvCheckboxlist', function($log){
             };
 
             elem.bind('change', function(){
-                console.log('ha cambiado ' + scope.value);
                 scope.$apply(viewToModel());
             });
 
             elem.bind('click', function(){
-                console.log('ha cambiado click ' + scope.value);
                 scope.$apply(viewToModel());
             });
 
@@ -383,7 +385,7 @@ itvUtilDirectivesModule.directive('itvMessage', function($interpolate, itvMessag
  */
 itvUtilDirectivesModule.directive('itvTooltipfade', function($timeout){
     return function(scope, elem, attrs){
-        elem.bind('mouseenter', function(){
+        elem.bind('mouseover', function(){
             var timeout = attrs.itvTooltipfade || 2000;
             $timeout(function(){
                 scope.tt_isOpen = false;
@@ -1327,6 +1329,7 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
      * @param {array} notEditableFields Array con los nombres de las columnas
      * que no permiten su edición.
      * @param {array} hiddenColumns Array con los nombres de cada columna no visible.
+     * @param {string} idField id que no sera modificable en inserciones
      *
      * @returns {array} Array con un objeto por cada columna con su nombre, si está
      * oculto y si es editable.
@@ -1793,7 +1796,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </th>\r" +
     "\n" +
-    "                <th class=\"col-xs-1\" itv-message=\"table.header.action\"></th>\r" +
+    "                <th class=\"col-xs-1\" itv-message=\"table.header.action\" ng-show=\"allowCUD\"></th>\r" +
     "\n" +
     "            </tr>\r" +
     "\n" +
@@ -1841,7 +1844,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </td>\r" +
     "\n" +
-    "                <td>\r" +
+    "                <td ng-show=\"allowCUD\">\r" +
     "\n" +
     "                    <div class=\"btn-group\" ng-show=\"row.editMode == null || row.editMode == false\">\r" +
     "\n" +
@@ -1952,7 +1955,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <ul class=\"dropdown-menu\">\r" +
     "\n" +
-    "                <li class=\"clickable menuItem\" ng-click=\"setInsertMode()\">\r" +
+    "                <li class=\"clickable menuItem\" ng-click=\"setInsertMode()\" ng-show=\"allowCUD\">\r" +
     "\n" +
     "                    <i class=\"fa fa-plus fa-lg\"></i> <span itv-message=\"panelbody.menu.add\"></span>\r" +
     "\n" +

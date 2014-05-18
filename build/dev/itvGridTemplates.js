@@ -112,7 +112,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </th>\r" +
     "\n" +
-    "                <th class=\"col-xs-1\" itv-message=\"table.header.action\"></th>\r" +
+    "                <th class=\"col-xs-1\" itv-message=\"table.header.action\" ng-show=\"allowCUD\"></th>\r" +
     "\n" +
     "            </tr>\r" +
     "\n" +
@@ -160,7 +160,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </td>\r" +
     "\n" +
-    "                <td>\r" +
+    "                <td ng-show=\"allowCUD\">\r" +
     "\n" +
     "                    <div class=\"btn-group\" ng-show=\"row.editMode == null || row.editMode == false\">\r" +
     "\n" +
@@ -271,7 +271,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <ul class=\"dropdown-menu\">\r" +
     "\n" +
-    "                <li class=\"clickable menuItem\" ng-click=\"setInsertMode()\">\r" +
+    "                <li class=\"clickable menuItem\" ng-click=\"setInsertMode()\" ng-show=\"allowCUD\">\r" +
     "\n" +
     "                    <i class=\"fa fa-plus fa-lg\"></i> <span itv-message=\"panelbody.menu.add\"></span>\r" +
     "\n" +

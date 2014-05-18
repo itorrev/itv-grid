@@ -27,7 +27,7 @@
                 <i class="fa fa-sort-down"></i>
             </button>
             <ul class="dropdown-menu">
-                <li class="clickable menuItem" ng-click="setInsertMode()">
+                <li class="clickable menuItem" ng-click="setInsertMode()" ng-show="allowCUD">
                     <i class="fa fa-plus fa-lg"></i> <span itv-message="panelbody.menu.add"></span>
                 </li>
                 <li class="clickable menuItem" ng-click="openHideColumnModal()">

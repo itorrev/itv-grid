@@ -10,7 +10,7 @@
                     <i ng-class="{'fa-sort-asc': orderBy.asc, 'fa-sort-desc': !orderBy.asc}" ng-show="orderBy.headerName == header.name" class="fa rightFloater"></i>
                     <i class="fa fa-sort rightFloater" ng-show="orderBy.headerName != header.name"></i>
                 </th>
-                <th class="col-xs-1" itv-message="table.header.action"></th>
+                <th class="col-xs-1" itv-message="table.header.action" ng-show="allowCUD"></th>
             </tr>
             </thead>
             <tbody>
@@ -34,7 +34,7 @@
                     <div ng-show="row.editMode == null || row.editMode == false || !header.isEditable">{{ row[header.name] }}</div>
                     <div ng-show="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="copiedEditingRow[header.name]"></div>
                 </td>
-                <td>
+                <td ng-show="allowCUD">
                     <div class="btn-group" ng-show="row.editMode == null || row.editMode == false">
                         <button class="btn btn-default btn-sm" ng-click="deleteData(row)" itv-tooltipfade tooltip="{{ 'action.btn.delete.tooltip' | messageFilter }}">
                             <i class="fa fa-trash-o fa-lg"></i>
