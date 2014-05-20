@@ -1686,6 +1686,33 @@ itvAnimationsModule.animation('.itvFade', function(){
     }
 });
 
+/**
+ * @ngdoc animation
+ * @name itvDetailSlide
+ * @description
+ *
+ * Realiza una animación de 'slide' cuando se añade y elimina el elemento del DOM
+ * Para ello se usa 'enter' y 'leave' que son los eventos que se lanzan en ese caso.
+ *
+ */
+itvAnimationsModule.animation('.itvDetailSlide', function($timeout){
+    return {
+        enter: function(element, done){
+            var div = element.find('div.overflowHidden');
+            var height = div.css('height');
+            element.addClass('overflowHidden');
+            div.css('height', 0);
+            TweenMax.to(div, 1, {css: {height: height}, onComplete: done});
+        },
+
+        leave: function(element, done){
+            element.addClass('overflowHidden');
+            var div = element.find('div.overflowHidden');
+            TweenMax.to(div, 1, {css: {height: 0}, onComplete: done});
+        }
+    }
+});
+
 angular.module('itvGrid').run(['$templateCache', function($templateCache) {
   'use strict';
 
@@ -1888,11 +1915,11 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </tr>\r" +
     "\n" +
-    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && (detailIndex == $index)\">\r" +
+    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && (detailIndex == $index)\" class=\"itvDetailSlide\">\r" +
     "\n" +
     "                <td colspan=\"100%\" class=\"noHover\">\r" +
     "\n" +
-    "                   <div>\r" +
+    "                   <div class=\"overflowHidden\">\r" +
     "\n" +
     "                       <ul>\r" +
     "\n" +

@@ -200,11 +200,11 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </tr>\r" +
     "\n" +
-    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && (detailIndex == $index)\">\r" +
+    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && (detailIndex == $index)\" class=\"itvDetailSlide\">\r" +
     "\n" +
     "                <td colspan=\"100%\" class=\"noHover\">\r" +
     "\n" +
-    "                   <div>\r" +
+    "                   <div class=\"overflowHidden\">\r" +
     "\n" +
     "                       <ul>\r" +
     "\n" +

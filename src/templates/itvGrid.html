@@ -54,9 +54,9 @@
                     </div>
                 </td>
             </tr>
-            <tr ng-repeat-end="" ng-if="masterDetailActive && (detailIndex == $index)">
+            <tr ng-repeat-end="" ng-if="masterDetailActive && (detailIndex == $index)" class="itvDetailSlide">
                 <td colspan="100%" class="noHover">
-                   <div>
+                   <div class="overflowHidden">
                        <ul>
                            <li ng-repeat="header in headers">{{ row[header.name] }}</li>
                        </ul>
