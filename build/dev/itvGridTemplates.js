@@ -150,7 +150,9 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </tr>\r" +
     "\n" +
-    "            <tr ng-repeat-start=\"row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina\" ng-click=\"addDetailIndex($index)\">\r" +
+    "            <tr ng-repeat-start=\"row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina\"\r" +
+    "\n" +
+    "                ng-click=\"addDetailIndex($index)\" ng-class=\"{clickable: masterDetailActive}\">\r" +
     "\n" +
     "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\"  class=\"itvFade\">\r" +
     "\n" +
