@@ -30,16 +30,16 @@
                 </td>
             </tr>
             <tr ng-repeat-start="row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina">
-                <td ng-repeat="header in headers" ng-hide="header.isHidden" class="itvFade" ng-class="{clickable: masterDetailActive}" ng-click="addDetailIndex($parent.$index)">
+                <td ng-repeat="header in headers" ng-hide="header.isHidden" class="itvFade" ng-class="{'clickable': masterDetailActive && !row.editMode}" ng-click="addDetailIndex($parent.$index)">
                     <div ng-show="row.editMode == null || row.editMode == false || !header.isEditable">{{ row[header.name] }}</div>
                     <div ng-show="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="copiedEditingRow[header.name]"></div>
                 </td>
                 <td ng-if="allowCUD">
                     <div class="btn-group" ng-show="row.editMode == null || row.editMode == false">
-                        <button class="btn btn-default btn-sm" ng-click="deleteData(row)" itv-tooltipfade tooltip="{{ 'action.btn.delete.tooltip' | messageFilter }}">
+                        <button class="btn btn-default btn-sm" ng-click="deleteData(row)" itv-tooltipfade tooltip="{{ 'action.btn.delete.tooltip' | messageFilter }}" ng-disabled="detailIndex == $index">
                             <i class="fa fa-trash-o fa-lg"></i>
                         </button>
-                        <button class="btn btn-default btn-sm" ng-click="setRowEditable(row)" itv-tooltipfade tooltip="{{ 'action.btn.edit.tooltip' | messageFilter }}">
+                        <button class="btn btn-default btn-sm" ng-click="setRowEditable(row)" itv-tooltipfade tooltip="{{ 'action.btn.edit.tooltip' | messageFilter }}"  ng-disabled="detailIndex == $index">
                             <i class="fa fa-edit fa-lg"></i>
                         </button>
                     </div>
@@ -54,7 +54,7 @@
                     </div>
                 </td>
             </tr>
-            <tr ng-repeat-end="" ng-if="masterDetailActive && (detailIndex == $index)" class="itvDetailSlide">
+            <tr ng-repeat-end="" ng-if="masterDetailActive && !row.editMode && (detailIndex == $index)" class="itvDetailSlide">
                 <td colspan="100%" class="noHover">
                    <div class="overflowHidden">
                        <ul>

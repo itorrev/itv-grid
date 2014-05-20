@@ -152,7 +152,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <tr ng-repeat-start=\"row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina\">\r" +
     "\n" +
-    "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\" class=\"itvFade\" ng-class=\"{clickable: masterDetailActive}\" ng-click=\"addDetailIndex($parent.$index)\">\r" +
+    "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\" class=\"itvFade\" ng-class=\"{'clickable': masterDetailActive && !row.editMode}\" ng-click=\"addDetailIndex($parent.$index)\">\r" +
     "\n" +
     "                    <div ng-show=\"row.editMode == null || row.editMode == false || !header.isEditable\">{{ row[header.name] }}</div>\r" +
     "\n" +
@@ -164,13 +164,13 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    <div class=\"btn-group\" ng-show=\"row.editMode == null || row.editMode == false\">\r" +
     "\n" +
-    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"deleteData(row)\" itv-tooltipfade tooltip=\"{{ 'action.btn.delete.tooltip' | messageFilter }}\">\r" +
+    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"deleteData(row)\" itv-tooltipfade tooltip=\"{{ 'action.btn.delete.tooltip' | messageFilter }}\" ng-disabled=\"detailIndex == $index\">\r" +
     "\n" +
     "                            <i class=\"fa fa-trash-o fa-lg\"></i>\r" +
     "\n" +
     "                        </button>\r" +
     "\n" +
-    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"setRowEditable(row)\" itv-tooltipfade tooltip=\"{{ 'action.btn.edit.tooltip' | messageFilter }}\">\r" +
+    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"setRowEditable(row)\" itv-tooltipfade tooltip=\"{{ 'action.btn.edit.tooltip' | messageFilter }}\"  ng-disabled=\"detailIndex == $index\">\r" +
     "\n" +
     "                            <i class=\"fa fa-edit fa-lg\"></i>\r" +
     "\n" +
@@ -200,7 +200,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </tr>\r" +
     "\n" +
-    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && (detailIndex == $index)\" class=\"itvDetailSlide\">\r" +
+    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && !row.editMode && (detailIndex == $index)\" class=\"itvDetailSlide\">\r" +
     "\n" +
     "                <td colspan=\"100%\" class=\"noHover\">\r" +
     "\n" +
