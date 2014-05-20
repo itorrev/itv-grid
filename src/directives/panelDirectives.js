@@ -68,6 +68,8 @@ panelDirectivesModule.directive('itvPanelfooter', function(UtilsService){
                 // si se está editando algún elemento, al cambiar de
                 // página se quita el modo de edición
                 scope.clearEditMode();
+                // también el detail index
+                scope.detailIndex = -1;
                 scope.pagina = pagina;
                 // al cambiar de página se vuelven a calcular los valores de los
                 // elementos mostrados y totales para actualizar el literal del pie
