@@ -39,6 +39,8 @@ itvAnimationsModule.animation('.itvSlide',['$timeout', function($timeout){
                 height = element.height();
                 element.addClass('overflowHidden');
                 TweenMax.to(element, 1, {css: {height: 0}, onComplete: done});
+            } else {
+                done();
             }
         },
         removeClass: function(element, className, done){
@@ -48,6 +50,8 @@ itvAnimationsModule.animation('.itvSlide',['$timeout', function($timeout){
                     element.removeClass('overflowHidden');
                     element.css('height', 'auto');
                 }, 1100);
+            } else {
+                done();
             }
         }
     }
@@ -70,11 +74,15 @@ itvAnimationsModule.animation('.itvFade', function(){
         beforeAddClass: function(element, className, done){
             if (className === 'ng-hide'){
                 TweenMax.to(element, 1, {css: {opacity: 0}, onComplete: done});
+            } else {
+                done();
             }
         },
         removeClass: function(element, className, done){
             if (className === 'ng-hide'){
                 TweenMax.to(element, 1, {css: {opacity: 1}, onComplete: done});
+            } else {
+                done();
             }
         }
     }
@@ -89,7 +97,7 @@ itvAnimationsModule.animation('.itvFade', function(){
  * Para ello se usa 'enter' y 'leave' que son los eventos que se lanzan en ese caso.
  *
  */
-itvAnimationsModule.animation('.itvDetailSlide', function($timeout){
+itvAnimationsModule.animation('.itvDetailSlide', function(){
     return {
         enter: function(element, done){
             var div = element.find('div.overflowHidden');
