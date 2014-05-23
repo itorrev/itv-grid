@@ -24,7 +24,9 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.paramHeaders = [];
             scope.notEditableFields = [];
             scope.allowCUD = false;
-            scope.masterDetailActive = true;
+            scope.editActive = false;
+            scope.masterDetailActive = false;
+            scope.detailCols = [];
 
             if(attrs.itvGridColumns){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
@@ -40,6 +42,19 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
 
             if(attrs.itvGridAllowcud === 'true'){
                 scope.allowCUD = true;
+            }
+
+            if(attrs.itvGridMasterDetail === 'true'){
+                scope.masterDetailActive = true;
+            }
+
+            if(attrs.itvGridDetailCols){
+                angular.forEach(attrs.itvGridDetailCols.split(','), function(value, key){
+                    scope.detailCols.push(value);
+                });
+                if(_.isEmpty(scope.detailCols)){
+                    scope.masterDetailActive = false;
+                };
             }
 
             var specificConfigDataService = {};
@@ -143,6 +158,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     editedResource.editMode = !editedResource.editMode;
                     scope.originalEditingRow = editedResource;
                     angular.copy(_.omit(editedResource, 'editMode'), scope.copiedEditingRow);
+                    scope.editActive = true;
                 }
             };
 
@@ -155,6 +171,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     scope.originalEditingRow.editMode = false;
                     scope.originalEditingRow = {};
                     scope.copiedEditingRow = {};
+                    scope.editActive = false;
                 }
             };
 
@@ -170,7 +187,13 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.addDetailIndex = function(index){
-                scope.detailIndex = index == scope.detailIndex ? -1 : index;
+                if(scope.masterDetailActive && !scope.editActive){
+                    scope.detailIndex = index == scope.detailIndex ? -1 : index;
+                }
+            };
+
+            scope.isRowClickable = function(){
+                return scope.masterDetailActive && !scope.editActive ? 'clickable' : '';
             };
 
             scope.reloadData();
@@ -1648,6 +1671,8 @@ itvAnimationsModule.animation('.itvSlide',['$timeout', function($timeout){
                 height = element.height();
                 element.addClass('overflowHidden');
                 TweenMax.to(element, 1, {css: {height: 0}, onComplete: done});
+            } else {
+                done();
             }
         },
         removeClass: function(element, className, done){
@@ -1657,6 +1682,8 @@ itvAnimationsModule.animation('.itvSlide',['$timeout', function($timeout){
                     element.removeClass('overflowHidden');
                     element.css('height', 'auto');
                 }, 1100);
+            } else {
+                done();
             }
         }
     }
@@ -1679,11 +1706,15 @@ itvAnimationsModule.animation('.itvFade', function(){
         beforeAddClass: function(element, className, done){
             if (className === 'ng-hide'){
                 TweenMax.to(element, 1, {css: {opacity: 0}, onComplete: done});
+            } else {
+                done();
             }
         },
         removeClass: function(element, className, done){
             if (className === 'ng-hide'){
                 TweenMax.to(element, 1, {css: {opacity: 1}, onComplete: done});
+            } else {
+                done();
             }
         }
     }
@@ -1698,7 +1729,7 @@ itvAnimationsModule.animation('.itvFade', function(){
  * Para ello se usa 'enter' y 'leave' que son los eventos que se lanzan en ese caso.
  *
  */
-itvAnimationsModule.animation('.itvDetailSlide', function($timeout){
+itvAnimationsModule.animation('.itvDetailSlide', function(){
     return {
         enter: function(element, done){
             var div = element.find('div.overflowHidden');
@@ -1870,11 +1901,11 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <tr ng-repeat-start=\"row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina\">\r" +
     "\n" +
-    "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\" class=\"itvFade\" ng-class=\"{clickable: masterDetailActive}\" ng-click=\"addDetailIndex($parent.$index)\">\r" +
+    "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\" class=\"itvFade\" ng-class=\"isRowClickable()\" ng-click=\"addDetailIndex($parent.$index)\">\r" +
     "\n" +
-    "                    <div ng-show=\"row.editMode == null || row.editMode == false || !header.isEditable\">{{ row[header.name] }}</div>\r" +
+    "                    <div ng-if=\"row.editMode == null || row.editMode == false || !header.isEditable\">{{ row[header.name] }}</div>\r" +
     "\n" +
-    "                    <div ng-show=\"row.editMode == true && header.isEditable\"><input class=\"form-control\" type=\"text\" ng-model=\"copiedEditingRow[header.name]\"></div>\r" +
+    "                    <div ng-if=\"row.editMode == true && header.isEditable\"><input class=\"form-control\" type=\"text\" ng-model=\"copiedEditingRow[header.name]\"></div>\r" +
     "\n" +
     "                </td>\r" +
     "\n" +
@@ -1882,13 +1913,13 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    <div class=\"btn-group\" ng-show=\"row.editMode == null || row.editMode == false\">\r" +
     "\n" +
-    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"deleteData(row)\" itv-tooltipfade tooltip=\"{{ 'action.btn.delete.tooltip' | messageFilter }}\">\r" +
+    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"deleteData(row)\" itv-tooltipfade tooltip=\"{{ 'action.btn.delete.tooltip' | messageFilter }}\" ng-disabled=\"detailIndex == $index\">\r" +
     "\n" +
     "                            <i class=\"fa fa-trash-o fa-lg\"></i>\r" +
     "\n" +
     "                        </button>\r" +
     "\n" +
-    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"setRowEditable(row)\" itv-tooltipfade tooltip=\"{{ 'action.btn.edit.tooltip' | messageFilter }}\">\r" +
+    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"setRowEditable(row)\" itv-tooltipfade tooltip=\"{{ 'action.btn.edit.tooltip' | messageFilter }}\"  ng-disabled=\"detailIndex == $index\">\r" +
     "\n" +
     "                            <i class=\"fa fa-edit fa-lg\"></i>\r" +
     "\n" +
@@ -1918,7 +1949,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </tr>\r" +
     "\n" +
-    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && (detailIndex == $index)\" class=\"itvDetailSlide\">\r" +
+    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && !editActive && (detailIndex == $index)\" class=\"itvDetailSlide\">\r" +
     "\n" +
     "                <td colspan=\"100%\" class=\"noHover\">\r" +
     "\n" +
@@ -1926,7 +1957,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                       <ul>\r" +
     "\n" +
-    "                           <li ng-repeat=\"header in headers\">{{ row[header.name] }}</li>\r" +
+    "                           <li ng-repeat=\"detail in detailCols\"><b>{{detail | capitalize}}</b>: {{ row[detail] }}</li>\r" +
     "\n" +
     "                       </ul>\r" +
     "\n" +

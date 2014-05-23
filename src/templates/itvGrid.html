@@ -30,9 +30,9 @@
                 </td>
             </tr>
             <tr ng-repeat-start="row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina">
-                <td ng-repeat="header in headers" ng-hide="header.isHidden" class="itvFade" ng-class="{'clickable': masterDetailActive && !row.editMode}" ng-click="addDetailIndex($parent.$index)">
-                    <div ng-show="row.editMode == null || row.editMode == false || !header.isEditable">{{ row[header.name] }}</div>
-                    <div ng-show="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="copiedEditingRow[header.name]"></div>
+                <td ng-repeat="header in headers" ng-hide="header.isHidden" class="itvFade" ng-class="isRowClickable()" ng-click="addDetailIndex($parent.$index)">
+                    <div ng-if="row.editMode == null || row.editMode == false || !header.isEditable">{{ row[header.name] }}</div>
+                    <div ng-if="row.editMode == true && header.isEditable"><input class="form-control" type="text" ng-model="copiedEditingRow[header.name]"></div>
                 </td>
                 <td ng-if="allowCUD">
                     <div class="btn-group" ng-show="row.editMode == null || row.editMode == false">
@@ -54,11 +54,11 @@
                     </div>
                 </td>
             </tr>
-            <tr ng-repeat-end="" ng-if="masterDetailActive && !row.editMode && (detailIndex == $index)" class="itvDetailSlide">
+            <tr ng-repeat-end="" ng-if="masterDetailActive && !editActive && (detailIndex == $index)" class="itvDetailSlide">
                 <td colspan="100%" class="noHover">
                    <div class="overflowHidden">
                        <ul>
-                           <li ng-repeat="header in headers">{{ row[header.name] }}</li>
+                           <li ng-repeat="detail in detailCols"><b>{{detail | capitalize}}</b>: {{ row[detail] }}</li>
                        </ul>
                    </div>
                 </td>

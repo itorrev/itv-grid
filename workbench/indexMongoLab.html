@@ -34,8 +34,12 @@
 <body ng-app="mongoLabTestApp" style="width: 80%; margin-left: 150px; margin-top: 20px; background-color: darkorange">
     <div>
         <div>
-            <itv-grid itv-grid-url="https://api.mongolab.com/api/1/databases/itvempresa/collections/empleados/" itv-grid-title="MongoLab Test" itv-grid-allowcud="true"
-                      itv-grid-param-name="apiKey" itv-grid-param-value="o_YePtBXIXDJiG1MVpacLhhVpVNvDqcC" itv-grid-id="_id.$oid" itv-grid-strip-updateid="true"></itv-grid>
+            <itv-grid itv-grid-url="https://api.mongolab.com/api/1/databases/itvempresa/collections/empleados/"
+                      itv-grid-title="MongoLab Test" itv-grid-allowcud="true"
+                      itv-grid-columns="edad,nombre,apellido,direccion,ciudad"
+                      itv-grid-param-name="apiKey" itv-grid-param-value="o_YePtBXIXDJiG1MVpacLhhVpVNvDqcC"
+                      itv-grid-id="_id.$oid" itv-grid-strip-updateid="true" itv-grid-master-detail="true"
+                      itv-grid-detail-cols="salario,email,telefono,departamento,contratacion"></itv-grid>
         </div>
         <!--div>
             <itv-grid itv-grid-url="http://localhost:8080/itvRestServer/rest/personas" itv-grid-title="itvGridTable"

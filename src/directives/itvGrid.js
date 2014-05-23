@@ -24,6 +24,9 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.paramHeaders = [];
             scope.notEditableFields = [];
             scope.allowCUD = false;
+            scope.editActive = false;
+            scope.masterDetailActive = false;
+            scope.detailCols = [];
 
             if(attrs.itvGridColumns){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
@@ -39,6 +42,19 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
 
             if(attrs.itvGridAllowcud === 'true'){
                 scope.allowCUD = true;
+            }
+
+            if(attrs.itvGridMasterDetail === 'true'){
+                scope.masterDetailActive = true;
+            }
+
+            if(attrs.itvGridDetailCols){
+                angular.forEach(attrs.itvGridDetailCols.split(','), function(value, key){
+                    scope.detailCols.push(value);
+                });
+                if(_.isEmpty(scope.detailCols)){
+                    scope.masterDetailActive = false;
+                };
             }
 
             var specificConfigDataService = {};
@@ -142,6 +158,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     editedResource.editMode = !editedResource.editMode;
                     scope.originalEditingRow = editedResource;
                     angular.copy(_.omit(editedResource, 'editMode'), scope.copiedEditingRow);
+                    scope.editActive = true;
                 }
             };
 
@@ -154,6 +171,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     scope.originalEditingRow.editMode = false;
                     scope.originalEditingRow = {};
                     scope.copiedEditingRow = {};
+                    scope.editActive = false;
                 }
             };
 
@@ -169,7 +187,13 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.addDetailIndex = function(index){
-                scope.detailIndex = index == scope.detailIndex ? -1 : index;
+                if(scope.masterDetailActive && !scope.editActive){
+                    scope.detailIndex = index == scope.detailIndex ? -1 : index;
+                }
+            };
+
+            scope.isRowClickable = function(){
+                return scope.masterDetailActive && !scope.editActive ? 'clickable' : '';
             };
 
             scope.reloadData();
