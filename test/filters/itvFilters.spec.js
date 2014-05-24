@@ -47,5 +47,32 @@ describe('itvFilters', function(){
             itvMessages['nonexist.key'] = 'new message';
             expect(messageFilterFilter('nonexist.key')).toEqual('new message');
         }))
+    });
+
+    describe('selection filter', function(){
+        var input = [
+            {$id: function(){ return '1'}},
+            {$id: function(){ return '2'}},
+            {$id: function(){ return '3'}},
+            {$id: function(){ return '4'}},
+            {$id: function(){ return '5'}},
+            {$id: function(){ return '6'}},
+            {$id: function(){ return '7'}},
+            {$id: function(){ return '8'}},
+            {$id: function(){ return '9'}}
+        ];
+        var selected = ['1', '5', '8'];
+
+        it('should return input unfiltered if select view is not active', inject(function(selectionModeFilter){
+            expect(selectionModeFilter(input, false, selected)).toEqual(input);
+        }));
+
+        it('should return filtered results', inject(function(selectionModeFilter){
+            var result = selectionModeFilter(input, true, selected);
+            expect(result.length).toEqual(3);
+            expect(result[0].$id()).toEqual('1');
+            expect(result[1].$id()).toEqual('5');
+            expect(result[2].$id()).toEqual('8');
+        }))
     })
 });
