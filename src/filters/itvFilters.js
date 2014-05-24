@@ -92,3 +92,33 @@ itvFiltersModule.filter('messageFilter', function(itvMessages){
         }
     }
 });
+
+/**
+ * @ngdoc filter
+ * @name selectionMode
+ * @function
+ *
+ * @description
+ *
+ * Filtra los resultados recibidos en base a un array de ids
+ *
+ * @param {boolean} selectionView Define si el filtro actúa o devuelve todos los elementos del input.
+ * @param {array} selectedRows Array de ids para la ejecución del filtro.
+ *
+ * @returns {array} Resultados del array de entrada cuyos ids aparecen en el array selectedRows
+ */
+itvFiltersModule.filter('selectionMode', function(){
+    return function(input, selectionView, selectedRows){
+        if(!selectionView){
+            return input;
+        } else {
+            var selected = [];
+            angular.forEach(input, function(value, key){
+                if(selectedRows.indexOf(value.$id()) != -1){
+                    selected.push(value);
+                }
+            });
+            return selected;
+        }
+    }
+});

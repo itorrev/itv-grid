@@ -57,6 +57,18 @@
     background-color: transparent;
 }
 
+.checkColumn{
+    width: 10px;
+}
+
+.verticalCenter{
+    vertical-align: middle !important;
+}
+
+.rowSelected{
+    background-color: #c7e6c7 !important;
+}
+
 /*
 Los siguientes estilos están modificados partiendo de los de bootstrap css para
 permitir la integración correcta entre los elementos panel y table cuando no

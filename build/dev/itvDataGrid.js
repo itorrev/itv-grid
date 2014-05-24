@@ -27,6 +27,10 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.editActive = false;
             scope.masterDetailActive = false;
             scope.detailCols = [];
+            scope.multiselection = true;
+            scope.selectedRows = [];
+            scope.selectionView = false;
+            scope.storedItemsTotales = 0;
 
             if(attrs.itvGridColumns){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
@@ -54,7 +58,9 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 });
                 if(_.isEmpty(scope.detailCols)){
                     scope.masterDetailActive = false;
-                };
+                }
+            } else {
+                scope.masterDetailActive = false;
             }
 
             var specificConfigDataService = {};
@@ -192,14 +198,26 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 }
             };
 
-            scope.isRowClickable = function(){
-                return scope.masterDetailActive && !scope.editActive ? 'clickable' : '';
+            scope.getRowClass = function(row){
+                var clickable = scope.masterDetailActive && !scope.editActive ? 'clickable' : '';
+                var selected = (scope.multiselection && !scope.selectionView && (scope.selectedRows.indexOf(row.$id()) != -1)) ? 'rowSelected' : '';
+                return clickable + ' ' + selected;
+            };
+
+            scope.removeFromSelection = function(row){
+                scope.selectedRows = _.without(scope.selectedRows, row.$id());
+                if(_.isEmpty(scope.selectedRows)){
+                    scope.toggleSelectionView();
+                } else {
+                    scope.itemsTotales--;
+                    scope.updateLiteral();
+                }
             };
 
             scope.reloadData();
         }
     }
-})
+});
 /**
  * Created by itorrev on 4/04/14.
  */
@@ -519,7 +537,6 @@ panelDirectivesModule.directive('itvPanelfooter', function(UtilsService){
             scope.pagina = 1;
 
             scope.cambioPagina = function(pagina){
-                console.log('invocado cambio de pagina: ' + pagina);
                 // si se está editando algún elemento, al cambiar de
                 // página se quita el modo de edición
                 scope.clearEditMode();
@@ -579,6 +596,7 @@ panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
                 scope.advancedFilterObj = {};
                 scope.filteredData = scope.data;
                 scope.itemsTotales = scope.filteredData.length;
+                scope.updateLiteral();
             };
 
             // al invocar el método se modificará el valor de la variable 'searchFilter',
@@ -592,7 +610,24 @@ panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
             // también el literal que muestra los elementos mostrados
             scope.updateLiteral = function(){
                 scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
-            }
+            };
+
+            scope.toggleSelectionView = function(){
+                scope.selectionView = !scope.selectionView;
+                if(scope.selectionView){
+                    scope.storedItemsTotales = scope.itemsTotales;
+                        scope.itemsTotales = scope.selectedRows.length;
+                    scope.cambioPagina(1);
+                } else {
+                    scope.itemsTotales = scope.storedItemsTotales;
+                    scope.storedItemsTotales = 0;
+                    scope.updateLiteral();
+                }
+            };
+
+            scope.isSelectedRows = function(){
+                return scope.selectedRows.length > 0;
+            };
 
             // función que abre el 'modal' de ocultación de columnas, se apoya en el
             // servicio $modal (del proyecto angular bootstrap ui). A través del método 'open'
@@ -805,6 +840,23 @@ itvFiltersModule.filter('messageFilter', function(itvMessages){
             return key;
         } else {
             return itvMessages[key] || key;
+        }
+    }
+});
+
+
+itvFiltersModule.filter('selectionMode', function(){
+    return function(input, selectionView, selectedRows){
+        if(!selectionView){
+            return input;
+        } else {
+            var selected = [];
+            angular.forEach(input, function(value, key){
+                if(selectedRows.indexOf(value.$id()) != -1){
+                    selected.push(value);
+                }
+            });
+            return selected;
         }
     }
 });
@@ -1293,6 +1345,8 @@ itvMessagesModule.value('itvMessages', {
     'panelbody.menu.add': 'Nuevo Registro',
     'panelbody.menu.hidecolumns': 'Ocultar Columnas',
     'panelbody.menu.filtercolumns': 'Filtrar Columnas',
+    'panelbody.menu.selectionview': 'Ver selecci&oacute;n',
+    'panelbody.menu.generalview': 'Vista general',
     'panelbody.page.items': 'Filas por p&aacute;gina: ',
     'panelbody.search.btn.tooltip': 'Buscar en todas las columnas',
     'panelbody.remove.btn.tooltip': 'Eliminar filtro por columna',
@@ -1308,6 +1362,7 @@ itvMessagesModule.value('itvMessages', {
     'action.btn.undo.tooltip': 'Deshacer',
     'action.btn.save.tooltip': 'Guardar',
     'action.btn.clearedit.tooltip': 'Quitar edici&oacute;n',
+    'action.btn.removefrom.tooltip': 'Quitar de la vista',
     'table.header.action': 'Acci&oacute;n'
 });
 /**
@@ -1851,6 +1906,8 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <tr>\r" +
     "\n" +
+    "                <th ng-if=\"multiselection\" class=\"checkColumn\"></th>\r" +
+    "\n" +
     "                <th ng-repeat=\"header in headers\" ng-click=\"setOrderBy(header.name)\" class=\"headerStyle itvFade\" ng-hide=\"header.isHidden\">\r" +
     "\n" +
     "                    {{ header.name | capitalize}}\r" +
@@ -1861,7 +1918,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </th>\r" +
     "\n" +
-    "                <th class=\"col-xs-1\" itv-message=\"table.header.action\" ng-show=\"allowCUD\"></th>\r" +
+    "                <th class=\"col-xs-1\" itv-message=\"table.header.action\" ng-if=\"allowCUD\"></th>\r" +
     "\n" +
     "            </tr>\r" +
     "\n" +
@@ -1871,7 +1928,9 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <tr ng-show=\"insertMode\">\r" +
     "\n" +
-    "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\" class=\"itvFade\">\r" +
+    "                <td class=\"checkcolumn\"></td>\r" +
+    "\n" +
+    "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\" class=\"itvFade verticalCenter\">\r" +
     "\n" +
     "                    <div ng-show=\"header.isInsertable\"><input class=\"form-control\" type=\"text\" ng-model=\"insertRow[header.name]\"></div>\r" +
     "\n" +
@@ -1899,9 +1958,29 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </tr>\r" +
     "\n" +
-    "            <tr ng-repeat-start=\"row in filteredData | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina\">\r" +
+    "            <tr ng-repeat-start=\"row in filteredData | selectionMode:selectionView:selectedRows | orderBy:orderBy.headerName:!orderBy.asc | paginationFilter:pagina:itemsPorPagina\">\r" +
     "\n" +
-    "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\" class=\"itvFade\" ng-class=\"isRowClickable()\" ng-click=\"addDetailIndex($parent.$index)\">\r" +
+    "                <td ng-if=\"multiselection\" class=\"verticalCenter\">\r" +
+    "\n" +
+    "                    <div class=\"checkbox\" ng-if=\"!selectionView\">\r" +
+    "\n" +
+    "                        <input type=\"checkbox\" value=\"{{ row.$id() }}\" itv-checkboxlist=\"selectedRows\">\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                    <div ng-if=\"selectionView\">\r" +
+    "\n" +
+    "                        <button class=\"btn btn-default btn-sm\" ng-click=\"removeFromSelection(row)\" itv-tooltipfade tooltip=\"{{ 'action.btn.removefrom.tooltip' | messageFilter }}\">\r" +
+    "\n" +
+    "                            <i class=\"fa fa-ban fa-lg\"></i>\r" +
+    "\n" +
+    "                        </button>\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                </td>\r" +
+    "\n" +
+    "                <td ng-repeat=\"header in headers\" ng-hide=\"header.isHidden\" class=\"itvFade verticalCenter\" ng-class=\"getRowClass(row)\" ng-click=\"addDetailIndex($parent.$index)\">\r" +
     "\n" +
     "                    <div ng-if=\"row.editMode == null || row.editMode == false || !header.isEditable\">{{ row[header.name] }}</div>\r" +
     "\n" +
@@ -1909,7 +1988,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </td>\r" +
     "\n" +
-    "                <td ng-if=\"allowCUD\">\r" +
+    "                <td ng-if=\"allowCUD\" class=\"verticalCenter\">\r" +
     "\n" +
     "                    <div class=\"btn-group\" ng-show=\"row.editMode == null || row.editMode == false\">\r" +
     "\n" +
@@ -1984,7 +2063,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <form class=\"form-inline\" role=\"form\">\r" +
     "\n" +
-    "        <div class=\"form-group\" ng-hide=\"advancedFilterActive\">\r" +
+    "        <div class=\"form-group\" ng-hide=\"advancedFilterActive || selectionView\">\r" +
     "\n" +
     "            <label for=\"buscar\" itv-message=\"panelbody.search.label\"></label>\r" +
     "\n" +
@@ -1996,7 +2075,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"form-group\" tooltip=\"{{'panelbody.search.tooltip' | messageFilter }}\"\r" +
     "\n" +
-    "             itv-tooltipfade ng-show=\"advancedFilterActive\">\r" +
+    "             itv-tooltipfade ng-show=\"advancedFilterActive && !selectionView\">\r" +
     "\n" +
     "            <label for=\"buscardisabled\" itv-message=\"panelbody.search.label\"></label>\r" +
     "\n" +
@@ -2006,7 +2085,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"form-group\">\r" +
     "\n" +
-    "            <button class=\"btn btn-default btn-sm form-control\" ng-hide=\"advancedFilterActive\" itv-tooltipfade\r" +
+    "            <button class=\"btn btn-default btn-sm form-control\" ng-hide=\"advancedFilterActive || selectionView\" itv-tooltipfade\r" +
     "\n" +
     "                    ng-click=\"doGenericFilter()\" tooltip=\"{{ 'panelbody.search.btn.tooltip' | messageFilter }}\">\r" +
     "\n" +
@@ -2014,7 +2093,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </button>\r" +
     "\n" +
-    "            <button class=\"btn btn-default btn-sm form-control\" ng-show=\"advancedFilterActive\" itv-tooltipfade\r" +
+    "            <button class=\"btn btn-default btn-sm form-control\" ng-show=\"advancedFilterActive && !selectionView\" itv-tooltipfade\r" +
     "\n" +
     "                    ng-click=\"clearAdvancedFilter()\" tooltip=\"{{ 'panelbody.remove.btn.tooltip' | messageFilter }}\">\r" +
     "\n" +
@@ -2038,7 +2117,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <ul class=\"dropdown-menu\">\r" +
     "\n" +
-    "                <li class=\"clickable menuItem\" ng-click=\"setInsertMode()\" ng-show=\"allowCUD\">\r" +
+    "                <li class=\"clickable menuItem\" ng-click=\"setInsertMode()\" ng-if=\"allowCUD && !selectionView\">\r" +
     "\n" +
     "                    <i class=\"fa fa-plus fa-lg\"></i> <span itv-message=\"panelbody.menu.add\"></span>\r" +
     "\n" +
@@ -2050,9 +2129,21 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </li>\r" +
     "\n" +
-    "                <li class=\"clickable menuItem\" ng-click=\"openAdvancedFilterModal()\">\r" +
+    "                <li class=\"clickable menuItem\" ng-click=\"openAdvancedFilterModal()\" ng-if=\"!selectionView\">\r" +
     "\n" +
     "                    <i class=\"fa fa-filter fa-lg\"></i> <span itv-message=\"panelbody.menu.filtercolumns\"></span>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "                <li class=\"clickable menuItem\" ng-click=\"toggleSelectionView()\" ng-if=\"!selectionView && isSelectedRows()\">\r" +
+    "\n" +
+    "                    <i class=\"fa fa-check-square-o fa-lg\"></i> <span itv-message=\"panelbody.menu.selectionview\"></span>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "                <li class=\"clickable menuItem\" ng-click=\"toggleSelectionView()\" ng-if=\"selectionView\">\r" +
+    "\n" +
+    "                    <i class=\"fa fa-check-square-o fa-lg\"></i> <span itv-message=\"panelbody.menu.generalview\"></span>\r" +
     "\n" +
     "                </li>\r" +
     "\n" +

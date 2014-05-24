@@ -21,6 +21,8 @@ itvMessagesModule.value('itvMessages', {
     'panelbody.menu.add': 'Nuevo Registro',
     'panelbody.menu.hidecolumns': 'Ocultar Columnas',
     'panelbody.menu.filtercolumns': 'Filtrar Columnas',
+    'panelbody.menu.selectionview': 'Ver selecci&oacute;n',
+    'panelbody.menu.generalview': 'Vista general',
     'panelbody.page.items': 'Filas por p&aacute;gina: ',
     'panelbody.search.btn.tooltip': 'Buscar en todas las columnas',
     'panelbody.remove.btn.tooltip': 'Eliminar filtro por columna',
@@ -36,5 +38,6 @@ itvMessagesModule.value('itvMessages', {
     'action.btn.undo.tooltip': 'Deshacer',
     'action.btn.save.tooltip': 'Guardar',
     'action.btn.clearedit.tooltip': 'Quitar edici&oacute;n',
+    'action.btn.removefrom.tooltip': 'Quitar de la vista',
     'table.header.action': 'Acci&oacute;n'
 });

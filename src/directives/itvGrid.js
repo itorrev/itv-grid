@@ -27,6 +27,10 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.editActive = false;
             scope.masterDetailActive = false;
             scope.detailCols = [];
+            scope.multiselection = true;
+            scope.selectedRows = [];
+            scope.selectionView = false;
+            scope.storedItemsTotales = 0;
 
             if(attrs.itvGridColumns){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
@@ -54,7 +58,9 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 });
                 if(_.isEmpty(scope.detailCols)){
                     scope.masterDetailActive = false;
-                };
+                }
+            } else {
+                scope.masterDetailActive = false;
             }
 
             var specificConfigDataService = {};
@@ -192,11 +198,23 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 }
             };
 
-            scope.isRowClickable = function(){
-                return scope.masterDetailActive && !scope.editActive ? 'clickable' : '';
+            scope.getRowClass = function(row){
+                var clickable = scope.masterDetailActive && !scope.editActive ? 'clickable' : '';
+                var selected = (scope.multiselection && !scope.selectionView && (scope.selectedRows.indexOf(row.$id()) != -1)) ? 'rowSelected' : '';
+                return clickable + ' ' + selected;
+            };
+
+            scope.removeFromSelection = function(row){
+                scope.selectedRows = _.without(scope.selectedRows, row.$id());
+                if(_.isEmpty(scope.selectedRows)){
+                    scope.toggleSelectionView();
+                } else {
+                    scope.itemsTotales--;
+                    scope.updateLiteral();
+                }
             };
 
             scope.reloadData();
         }
     }
-})
+});

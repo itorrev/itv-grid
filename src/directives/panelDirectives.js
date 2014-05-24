@@ -64,7 +64,6 @@ panelDirectivesModule.directive('itvPanelfooter', function(UtilsService){
             scope.pagina = 1;
 
             scope.cambioPagina = function(pagina){
-                console.log('invocado cambio de pagina: ' + pagina);
                 // si se está editando algún elemento, al cambiar de
                 // página se quita el modo de edición
                 scope.clearEditMode();
@@ -124,6 +123,7 @@ panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
                 scope.advancedFilterObj = {};
                 scope.filteredData = scope.data;
                 scope.itemsTotales = scope.filteredData.length;
+                scope.updateLiteral();
             };
 
             // al invocar el método se modificará el valor de la variable 'searchFilter',
@@ -137,7 +137,24 @@ panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
             // también el literal que muestra los elementos mostrados
             scope.updateLiteral = function(){
                 scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
-            }
+            };
+
+            scope.toggleSelectionView = function(){
+                scope.selectionView = !scope.selectionView;
+                if(scope.selectionView){
+                    scope.storedItemsTotales = scope.itemsTotales;
+                        scope.itemsTotales = scope.selectedRows.length;
+                    scope.cambioPagina(1);
+                } else {
+                    scope.itemsTotales = scope.storedItemsTotales;
+                    scope.storedItemsTotales = 0;
+                    scope.updateLiteral();
+                }
+            };
+
+            scope.isSelectedRows = function(){
+                return scope.selectedRows.length > 0;
+            };
 
             // función que abre el 'modal' de ocultación de columnas, se apoya en el
             // servicio $modal (del proyecto angular bootstrap ui). A través del método 'open'
