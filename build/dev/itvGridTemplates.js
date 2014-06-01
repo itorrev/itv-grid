@@ -224,19 +224,29 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </tr>\r" +
     "\n" +
-    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && !editActive && (detailIndex == $index)\" class=\"itvDetailSlide\">\r" +
+    "            <tr ng-repeat-end=\"\" ng-if=\"(masterDetailActive || createsubgrid) && !editActive && (detailIndex == $index)\">\r" +
     "\n" +
     "                <td colspan=\"100%\" class=\"noHover\">\r" +
     "\n" +
-    "                   <div class=\"overflowHidden\">\r" +
+    "                    <div>\r" +
     "\n" +
-    "                       <ul>\r" +
+    "                        <div ng-if=\"masterDetailActive\">\r" +
     "\n" +
-    "                           <li ng-repeat=\"detail in detailCols\"><b>{{detail | capitalize}}</b>: {{ row[detail] }}</li>\r" +
+    "                            <ul>\r" +
     "\n" +
-    "                       </ul>\r" +
+    "                                <li ng-repeat=\"detail in detailCols\"><b>{{detail | capitalize}}</b>: {{ row[detail] }}</li>\r" +
     "\n" +
-    "                   </div>\r" +
+    "                            </ul>\r" +
+    "\n" +
+    "                        </div>\r" +
+    "\n" +
+    "                        <div ng-if=\"createsubgrid\" class=\"subgrid\">\r" +
+    "\n" +
+    "                            <itv-sub-grid parentid=\"{{row.$id()}}\" createchild=\"{{ createsubgrid }}\"></itv-sub-grid>\r" +
+    "\n" +
+    "                        </div>\r" +
+    "\n" +
+    "                    </div>\r" +
     "\n" +
     "                </td>\r" +
     "\n" +

@@ -11,7 +11,7 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
         scope: {},
         templateUrl: 'itvGridTemplates/src/templates/itvGrid.html',
         link: function(scope, element, attrs){
-            scope.title = attrs.itvGridTitle || 'Data Grid';
+            scope.title = attrs.itvGridTitle || 'ITV Data Grid';
             scope.itemsPorPagina = 10;
             scope.itemsTotales = 0;
             scope.orderBy = {headerName: '', asc: false};
@@ -31,6 +31,13 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             scope.selectedRows = [];
             scope.selectionView = false;
             scope.storedItemsTotales = 0;
+            scope.createsubgrid = false;
+
+            if(attrs.itvSubgrid && attrs.itvSubgridPath.length > 0){
+                scope.createsubgrid = true;
+                scope.subgridInitObj = {};
+                scope.subgridPath = attrs.itvSubgridPath;
+            }
 
             if(attrs.itvGridColumns){
                 angular.forEach(attrs.itvGridColumns.split(','), function(value, key){
@@ -42,6 +49,9 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 angular.forEach(attrs.itvGridHide.split(','), function(value, key){
                     scope.hiddenColumns.push(value);
                 });
+                if(scope.createsubgrid){
+                    scope.subgridInitObj['itv-grid-hide'] = attrs.itvGridHide;
+                }
             }
 
             if(attrs.itvGridAllowcud === 'true'){
@@ -71,6 +81,10 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
 
             if(attrs.itvGridId){
                 specificConfigDataService.id = attrs.itvGridId;
+
+                if(scope.createsubgrid){
+                    scope.subgridInitObj['itv-grid-id'] = attrs.itvGridId;
+                }
             }
 
             if(attrs.itvGridParamName && attrs.itvGridParamValue){
@@ -79,6 +93,11 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 var params = {};
                 params[key] = value;
                 specificConfigDataService.params = params;
+
+                if(scope.createsubgrid){
+                    scope.subgridInitObj['itv-grid-param-name'] = attrs.itvGridParamName;
+                    scope.subgridInitObj['itv-grid-param-value'] = attrs.itvGridParamValue;
+                }
             }
 
             if(attrs.itvGridStripUpdateid){
@@ -86,6 +105,10 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     specificConfigDataService.requestDataTx = UtilsService.getStripIdOnUpdateTransformer();
                 } else if(attrs.itvGridStripUpdateid === 'false'){
                     specificConfigDataService.requestDataTx = UtilsService.getSimpleTransformer();
+                }
+
+                if(scope.createsubgrid){
+                    scope.subgridInitObj['itv-grid-strip-updateid'] = attrs.itvGridStripUpdateid;
                 }
             }
 
@@ -97,6 +120,27 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 angular.forEach(attrs.itvGridNoteditable.split(','), function(value, key){
                     scope.notEditableFields.push(value);
                 });
+
+                if(scope.createsubgrid){
+                    scope.subgridInitObj['itv-grid-noteditable'] = attrs.itvGridNoteditable;
+                }
+            }
+
+            if(scope.createsubgrid){
+                scope.subgridInitObj['itv-grid-url'] = dataResourceInstance.getUrl();
+                scope.subgridInitObj['itv-grid-allowcud'] = scope.allowCUD + '';
+                scope.subgridInitObj['itv-grid-master-detail'] = scope.masterDetailActive + '';
+
+                if(attrs.itvSubgridColumns){
+                    scope.subgridInitObj['itv-grid-columns'] = attrs.itvSubgridColumns;
+                }
+
+                if(attrs.itvSubgridDetailCols){
+                    scope.subgridInitObj['itv-grid-detail-cols'] = attrs.itvGridDetailCols;
+                }
+                console.log('****************');
+                console.log(JSON.stringify(scope.subgridInitObj));
+                console.log('****************');
             }
 
             scope.setOrderBy = function(header){
@@ -193,19 +237,19 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.addDetailIndex = function(index){
-                if(scope.masterDetailActive && !scope.editActive){
+                if((scope.masterDetailActive || scope.createsubgrid) && !scope.editActive){
                     scope.detailIndex = index == scope.detailIndex ? -1 : index;
                 }
             };
 
             scope.getRowClass = function(row){
-                var clickable = scope.masterDetailActive && !scope.editActive ? 'clickable' : '';
-                var selected = (scope.multiselection && !scope.selectionView && (scope.selectedRows.indexOf(row.$id()) != -1)) ? 'rowSelected' : '';
+                var clickable = (scope.masterDetailActive || scope.createsubgrid) && !scope.editActive ? 'clickable' : '';
+                var selected = (scope.multiselection && !scope.selectionView && (scope.selectedRows.indexOf(row.$id() + '') != -1)) ? 'rowSelected' : '';
                 return clickable + ' ' + selected;
             };
 
             scope.removeFromSelection = function(row){
-                scope.selectedRows = _.without(scope.selectedRows, row.$id());
+                scope.selectedRows = _.without(scope.selectedRows, row.$id() + '');
                 if(_.isEmpty(scope.selectedRows)){
                     scope.toggleSelectionView();
                 } else {
@@ -215,6 +259,31 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.reloadData();
+        }
+    }
+});
+
+itvGridModule.directive('itvSubGrid', function($compile){
+    return {
+        restrict: 'E',
+        scope: {},
+        link: function(scope, element, attrs){
+            if(attrs.createchild == 'true'){
+                var dataUrl = scope.$parent.subgridInitObj['itv-grid-url'] + attrs.parentid + '/' + scope.$parent.subgridPath;
+
+                var html = '<itv-grid itv-grid-url="' + dataUrl + '" itv-grid-title="Subgrid: ' + dataUrl + '" ';
+                angular.forEach(scope.$parent.subgridInitObj, function(value, key){
+                    if(key != 'itv-grid-url'){
+                        html = html + key + '="' + value + '" ';
+                    }
+                });
+                html = html + '><itv-grid/>';
+
+                console.log('html --> ' + html);
+
+                var compiledHtml = $compile(html)(scope);
+                element.html(compiledHtml);
+            }
         }
     }
 });
@@ -844,7 +913,20 @@ itvFiltersModule.filter('messageFilter', function(itvMessages){
     }
 });
 
-
+/**
+ * @ngdoc filter
+ * @name selectionMode
+ * @function
+ *
+ * @description
+ *
+ * Filtra los resultados recibidos en base a un array de ids
+ *
+ * @param {boolean} selectionView Define si el filtro actúa o devuelve todos los elementos del input.
+ * @param {array} selectedRows Array de ids para la ejecución del filtro.
+ *
+ * @returns {array} Resultados del array de entrada cuyos ids aparecen en el array selectedRows
+ */
 itvFiltersModule.filter('selectionMode', function(){
     return function(input, selectionView, selectedRows){
         if(!selectionView){
@@ -852,7 +934,7 @@ itvFiltersModule.filter('selectionMode', function(){
         } else {
             var selected = [];
             angular.forEach(input, function(value, key){
-                if(selectedRows.indexOf(value.$id()) != -1){
+                if(selectedRows.indexOf(value.$id() + '') != -1){
                     selected.push(value);
                 }
             });
@@ -942,7 +1024,7 @@ dataResourceModule.provider('DataResource', function(){
          */
         obj.getUrl = function(){
             return config.url;
-        }
+        };
 
         config.idField = _.isUndefined(config.idField) ? 'id' : config.idField;
 
@@ -978,7 +1060,7 @@ dataResourceModule.provider('DataResource', function(){
          */
         obj.getIdField = function(){
             return config.idField;
-        }
+        };
 
         config.requestParams = config.requestParams || {};
 
@@ -2028,19 +2110,29 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </tr>\r" +
     "\n" +
-    "            <tr ng-repeat-end=\"\" ng-if=\"masterDetailActive && !editActive && (detailIndex == $index)\" class=\"itvDetailSlide\">\r" +
+    "            <tr ng-repeat-end=\"\" ng-if=\"(masterDetailActive || createsubgrid) && !editActive && (detailIndex == $index)\">\r" +
     "\n" +
     "                <td colspan=\"100%\" class=\"noHover\">\r" +
     "\n" +
-    "                   <div class=\"overflowHidden\">\r" +
+    "                    <div>\r" +
     "\n" +
-    "                       <ul>\r" +
+    "                        <div ng-if=\"masterDetailActive\">\r" +
     "\n" +
-    "                           <li ng-repeat=\"detail in detailCols\"><b>{{detail | capitalize}}</b>: {{ row[detail] }}</li>\r" +
+    "                            <ul>\r" +
     "\n" +
-    "                       </ul>\r" +
+    "                                <li ng-repeat=\"detail in detailCols\"><b>{{detail | capitalize}}</b>: {{ row[detail] }}</li>\r" +
     "\n" +
-    "                   </div>\r" +
+    "                            </ul>\r" +
+    "\n" +
+    "                        </div>\r" +
+    "\n" +
+    "                        <div ng-if=\"createsubgrid\" class=\"subgrid\">\r" +
+    "\n" +
+    "                            <itv-sub-grid parentid=\"{{row.$id()}}\" createchild=\"{{ createsubgrid }}\"></itv-sub-grid>\r" +
+    "\n" +
+    "                        </div>\r" +
+    "\n" +
+    "                    </div>\r" +
     "\n" +
     "                </td>\r" +
     "\n" +

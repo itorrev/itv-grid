@@ -114,7 +114,7 @@ itvFiltersModule.filter('selectionMode', function(){
         } else {
             var selected = [];
             angular.forEach(input, function(value, key){
-                if(selectedRows.indexOf(value.$id()) != -1){
+                if(selectedRows.indexOf(value.$id() + '') != -1){
                     selected.push(value);
                 }
             });

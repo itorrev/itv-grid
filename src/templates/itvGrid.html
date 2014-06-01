@@ -66,13 +66,18 @@
                     </div>
                 </td>
             </tr>
-            <tr ng-repeat-end="" ng-if="masterDetailActive && !editActive && (detailIndex == $index)" class="itvDetailSlide">
+            <tr ng-repeat-end="" ng-if="(masterDetailActive || createsubgrid) && !editActive && (detailIndex == $index)">
                 <td colspan="100%" class="noHover">
-                   <div class="overflowHidden">
-                       <ul>
-                           <li ng-repeat="detail in detailCols"><b>{{detail | capitalize}}</b>: {{ row[detail] }}</li>
-                       </ul>
-                   </div>
+                    <div>
+                        <div ng-if="masterDetailActive">
+                            <ul>
+                                <li ng-repeat="detail in detailCols"><b>{{detail | capitalize}}</b>: {{ row[detail] }}</li>
+                            </ul>
+                        </div>
+                        <div ng-if="createsubgrid" class="subgrid">
+                            <itv-sub-grid parentid="{{row.$id()}}" createchild="{{ createsubgrid }}"></itv-sub-grid>
+                        </div>
+                    </div>
                 </td>
             </tr>
             </tbody>

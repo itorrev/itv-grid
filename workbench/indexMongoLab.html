@@ -41,10 +41,27 @@
                       itv-grid-id="_id.$oid" itv-grid-strip-updateid="true" itv-grid-master-detail="true"
                       itv-grid-detail-cols="salario,email,telefono,departamento,contratacion"></itv-grid>
         </div>
+
         <!--div>
             <itv-grid itv-grid-url="http://localhost:8080/itvRestServer/rest/personas" itv-grid-title="itvGridTable"
                       itv-grid-columns="id,nombre,apellido,pais,ciudad" itv-grid-hide="id" itv-grid-noteditable="nombre,apellido"></itv-grid>
         </div-->
+
+        <div>
+            <itv-grid itv-grid-url="http://localhost:8080/itvRestServer/rest/titulacion/"
+                      itv-grid-title="Carreras" itv-grid-allowcud="false"
+                      itv-grid-columns="nombre,plan,creditos,cursos,centro,categoria" itv-subgrid="true"
+                      itv-subgrid-path="asignatura"
+                      itv-subgrid-columns="nombre,creditos,tipo,cuatrimestre,curso"></itv-grid>
+
+        </div>
+
+        <div>
+            <!--itv-grid itv-grid-url="http://localhost:8080/itvRestServer/rest/titulacion/1/asignatura/"
+                      itv-grid-title="Asignaturas" itv-grid-allowcud="false"
+                      itv-grid-columns="nombre,creditos,tipo,cuatrimestre,curso"></itv-grid-->
+
+        </div>
     </div>
 <div>
 <!--itv-markdown>

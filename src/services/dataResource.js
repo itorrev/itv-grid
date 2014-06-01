@@ -80,7 +80,7 @@ dataResourceModule.provider('DataResource', function(){
          */
         obj.getUrl = function(){
             return config.url;
-        }
+        };
 
         config.idField = _.isUndefined(config.idField) ? 'id' : config.idField;
 
@@ -116,7 +116,7 @@ dataResourceModule.provider('DataResource', function(){
          */
         obj.getIdField = function(){
             return config.idField;
-        }
+        };
 
         config.requestParams = config.requestParams || {};
 
