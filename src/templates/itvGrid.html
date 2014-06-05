@@ -70,9 +70,7 @@
                 <td colspan="100%" class="noHover">
                     <div>
                         <div ng-if="masterDetailActive">
-                            <ul>
-                                <li ng-repeat="detail in detailCols"><b>{{detail | capitalize}}</b>: {{ row[detail] }}</li>
-                            </ul>
+                            <itv-detail itv-detail-active="{{ masterDetailActive }}" itv-detail-names="detailCols" itv-detail-row="row"></itv-detail>
                         </div>
                         <div ng-if="createsubgrid" class="subgrid">
                             <itv-sub-grid parentid="{{row.$id()}}" createchild="{{ createsubgrid }}"></itv-sub-grid>

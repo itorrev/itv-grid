@@ -287,3 +287,54 @@ itvGridModule.directive('itvSubGrid', function($compile){
         }
     }
 });
+
+itvGridModule.directive('itvDetail', function($compile){
+    return {
+        restrict: 'E',
+        scope: {
+            names: '=itvDetailNames',
+            row: '=itvDetailRow'
+        },
+        link: function(scope, element, attrs){
+
+            var checkImg = function(value){
+                var imgPattern = /\.jpg$|\.png$|\.jpeg$|\.gif$|\.bmp$/i;
+                return imgPattern.test(value);
+            };
+
+            var capitalize = function(s){
+                return s.substring(0,1).toUpperCase() + s.substring(1);
+            };
+
+            if(attrs.itvDetailActive == 'true' && scope.names.length > 0){
+                var imgHtml = '';
+                var html = '';
+                angular.forEach(scope.names, function(value, key){
+                    if(checkImg(scope.row[value])){
+                        imgHtml = '<img src="' + scope.row[value] + '" style="float: left; padding-right: 15px;">';
+                    } else {
+                        if(html.length == 0){
+                            html = '<ul>';
+                        }
+                        html = html + '<li><b>' + capitalize(value) +'</b>: ' + scope.row[value] + '</li>';
+                    }
+                });
+
+                if(html.length > 0){
+                    html = html + '</ul>';
+                }
+
+                if(imgHtml.length > 0){
+                    html = imgHtml + html + '<div style="clear: both;"></div>'
+                }
+
+                console.log(html);
+                var compiledHtml = $compile(html)(scope);
+                element.html(compiledHtml);
+            }
+
+            checkImg('http://img1.wikia.nocookie.net/__cb20100415081430/fma/images/5/58/Human_Transmutation_Circle.png');
+        }
+
+    }
+});

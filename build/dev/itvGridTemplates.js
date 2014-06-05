@@ -232,11 +232,7 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                        <div ng-if=\"masterDetailActive\">\r" +
     "\n" +
-    "                            <ul>\r" +
-    "\n" +
-    "                                <li ng-repeat=\"detail in detailCols\"><b>{{detail | capitalize}}</b>: {{ row[detail] }}</li>\r" +
-    "\n" +
-    "                            </ul>\r" +
+    "                            <itv-detail itv-detail-active=\"{{ masterDetailActive }}\" itv-detail-names=\"detailCols\" itv-detail-row=\"row\"></itv-detail>\r" +
     "\n" +
     "                        </div>\r" +
     "\n" +
