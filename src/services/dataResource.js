@@ -59,9 +59,9 @@ dataResourceModule.provider('DataResource', function(){
          */
         obj.setUrl = function(url){
             if(!_.isUndefined(url)){
-                if(url.charAt(url.length - 1)  !== '/'){
-                    url = url + '/';
-                }
+//                if(url.charAt(url.length - 1)  !== '/'){
+//                    url = url + '/';
+//                }
                 config.url = url;
                 console.log('Establecida url: ' + config.url);
             }
@@ -162,6 +162,62 @@ dataResourceModule.provider('DataResource', function(){
                 config.requestDataTransformer = requestDataTransformerFunction;
             }
         };
+
+        config.defaultDataExtractor = function(data){
+            return data;
+        };
+
+        config.dataExtractor = _.isUndefined(config.dataExtractor) ? config.defaultDataExtractor :
+            config.dataExtractor;
+
+        /**
+         * @ngdoc method
+         * @name DataResource#setDataExtractor
+         *      (DataResourceProvider#setDataExtractor)
+         *
+         * @description
+         *
+         * Establece la función para obtener el array de elementos de la respuesta del servidor,
+         * útil si la estructura de datos devuelta en las peticiones es compleja.
+         *
+         * @param {function} dataExtractorFn La función transformadora.
+         *
+         */
+        obj.setDataExtractor = function(dataExtractorFn){
+            if(_.isFunction(dataExtractorFn)){
+                config.dataExtractor = dataExtractorFn;
+            }
+        };
+
+        config.defaultResponseTransformer = function(data){
+            return data;
+        };
+
+        config.responseTransformer = _.isUndefined(config.responseTransformer) ? config.defaultResponseTransformer :
+            config.responseTransformer;
+
+        /**
+         * @ngdoc method
+         * @name DataResource#setResponseTransformer
+         *      (DataResourceProvider#setResponseTransformer)
+         *
+         * @description
+         *
+         * Establece la función para crear cada elemento a partir de los datos recibidos por el servidor,
+         * sirve para normalizar una estructura de objetos anidados y obtener solo los campos a mostrar.
+         *
+         * @param {function} responseTransformerFn La función transformadora.
+         *
+         */
+        obj.setResponseTransformer = function(responseTransformerFn){
+            if(_.isFunction(responseTransformerFn)){
+                config.responseTransformer = responseTransformerFn;
+            }
+        };
+
+        config.setMultiQuery = function(multi){
+            config.multiQuery = multi;
+        }
     };
 
     configurador.configurar(this, configObj);
@@ -208,17 +264,63 @@ dataResourceModule.provider('DataResource', function(){
              * del tipo DataResource.
              */
             DataResource.query = function(){
-                $log.log('query class function');
+                $log.log('query class function con multiquery ' + configuration.multiQuery);
                 var deferred = $q.defer();
-                $http.get(configuration.url, {params: configuration.requestParams}).
-                    then(function (response){
-                        $log.log(response.data);
-                        var result = [];
-                        angular.forEach(response.data, function (value, key){
-                            result[key] = new DataResource(value);
+                if(!configuration.multiQuery || !_.has(configuration.requestParams, 'limit')){
+                    $http.get(configuration.url, {params: configuration.requestParams}).
+                        then(function (response){
+                            $log.log(response.data);
+                            var result = [];
+                            var extractedData = configuration.dataExtractor(response.data);
+                            angular.forEach(extractedData, function (value, key){
+                                var responseElement = configuration.responseTransformer(value);
+                                result[key] = new DataResource(responseElement);
+                            });
+                            deferred.resolve(result);
                         });
-                        deferred.resolve(result);
-                    });
+                } else {
+                    //al haber un parámetro limit se realizarán peticiones múltiples
+                    // añadiendo también un parámetro offset hasta que el tamaño de
+                    // la respuesta sea menor que el limit
+                    $log.log('Entrando por multiquery');
+                    var result = [];
+                    var currentOfsset = 0;
+                    var requestParams = {};
+                    angular.copy(configuration.requestParams, requestParams);
+                    console.log('request params');
+                    console.log(JSON.stringify(requestParams));
+                    if(_.has(requestParams, 'offset')){
+                        currentOfsset = requestParams['offset'] * 1;
+                    }
+                    var multiquery = function(){
+                        requestParams['offset'] = currentOfsset;
+                        console.log('request params dentro de multiquery: ' + JSON.stringify(requestParams));
+                        console.log('current offset: ' + currentOfsset);
+                        $http.get(configuration.url, {params: requestParams}).
+                            then(function(response){
+                                var extractedData = configuration.dataExtractor(response.data);
+                                $log.log('recuperado array con longitud: ' + extractedData.length);
+                                angular.forEach(extractedData, function(value, key){
+                                    result.push(value);
+                                });
+                                if(extractedData.length < requestParams['limit']){
+                                    var finalResult = [];
+                                    angular.forEach(result, function (value, key){
+                                        var responseElement = configuration.responseTransformer(value);
+                                        finalResult[key] = new DataResource(responseElement);
+                                    });
+                                    deferred.resolve(finalResult);
+                                } else {
+                                    currentOfsset = currentOfsset + extractedData.length;
+                                    multiquery();
+                                }
+                            }, function(response){
+                                console.log('boooolardoooo');
+                                console.log(JSON.stringify(response));
+                            });
+                    };
+                    multiquery();
+                }
                 return deferred.promise;
             };
 
@@ -393,7 +495,6 @@ dataResourceModule.provider('DataResource', function(){
                 var deferred = $q.defer();
                 $http.put(updateUrl, transformedData, {
                     params: configuration.requestParams,
-                    //TODO es necesario el content-type?
                     headers: {'Content-Type': 'application/json'}
                 }).then(function(result){
                         var dr = new DataResource(result.data);
@@ -447,7 +548,7 @@ dataResourceModule.provider('DataResource', function(){
                 configurador.configurar(specificConfig, specificConfig);
                 specificConfigFunct(specificConfig);
                 return createServiceInstance(specificConfig);
-            }
+            };
 
             // se invoca de nuevo a la función para que el servicio DataResource
             // tenga los mismos métodos que el provider sin duplicar el código.

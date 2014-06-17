@@ -271,6 +271,10 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
                 if(specificConfigDataService.requestDataTx){
                     configurer.setRequestDataTransformer(specificConfigDataService.requestDataTx);
                 }
+                if(specificConfigDataService.multi){
+                    console.log('es multi');
+                    configurer.setMultiQuery(true);
+                }
             };
             return DataResource.getInstanceWithSpecificConfig(specificConfigFunction);
         }

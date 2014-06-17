@@ -41,6 +41,25 @@ incluir en la p&aacute;gina el siguiente bloque:
 ##Caracter&iacute;sticas
 itv-grid implementa las caracter&iacute;sticas b&aacute;sicas de un grid de datos como paginaci&oacute;n, ordenaci&oacute;n por columnas,
 edici&oacute;n creaci&oacute;n y borrado de elementos, ocultaci&oacute;n de columnas y filtrado por columnas o gen&eacute;rico.
+Tambi&eacute;n implementa algunas funciones m&aacute;s avanzadas:
+
+- Selecci&oacute;n m&uacute;ltiple
+
+Mediante una columna de checkboxes en cada línea el grid permite la selecci&oacute;n m&uacute;ltiple de filas. Cuando haya al menos un elemento
+seleccionado se activar&aacute; una opci&oacute;n en el men&uacute; llamada "Ver selecci&oacute;n" que mostrar&aacute; en el grid solo los elementos
+seleccionados.
+
+- Vista de detalle
+
+Para mostrar campos largos (por ejemplo descripciones, biograf&iacute;as, etc...) e im&aacute;genes el grid permite definir una serie de campos
+que se mostrar&aacute;n en una secci&oacute;n desplegable al hacer click en cada l&iacute;nea.
+
+- Grid secundario
+
+Algunas API rest poseen elementos enlazados de forma que a partir del id de un elemento se puede acceder a un elemento dependiente del primero,
+un ejemplo ser&iacute;a un elemento "persona" a trav&eacute;s de cuyo id se puede acceder al elemento "tarjetas de cr&eacute;dito" asociadas a
+esa persona, itv-grid permite configurarlo de forma que se muestre un grid hijo con esa informaci&oacute;n en una secci&oacute;n desplegable al
+hacer click en cada una de las filas.
 
 En el aspecto visual, itv-grid est&aacute; construido con un panel de bootstrap dentro del cual se integra una tabla para mostrar elementos.
 Este panel se compone de una cabecera con el t&iacute;tulo del grid, un cuerpo que agrupa distintas opciones del grid, la tabla
@@ -48,7 +67,7 @@ integrada donde se muestran los datos y una zona para el pie del panel donde se 
 con los elementos mostrados y totales.
 En el cuerpo del panel aparece un campo de texto para realizar b&uacute;squedas gen&eacute;ricas que aplicar&aacute;n a cualquier columna,
 un elemento para seleccionar el n&uacute;mero de registros por p&aacute;gina y un bot&oacute;n que desplegar&aacute; un peque&ntilde;o men&uacute; de opciones a
-trav&eacute;s del cual se accede a las opciones de creaci&oacute;n de un nuevo elemento y el filtrado y ocultaci&oacute;n de columnas.
+trav&eacute;s del cual se accede a las opciones de creaci&oacute;n de un nuevo elemento y el filtrado y ocultaci&oacute;n de columnas, as&iacute; como el modo de selecci&oacute;n.
 
 ##API REST
 itv-grid encapsula un servicio de datos basado en el objeto [$http](https://docs.angularjs.org/api/ng/service/$http) de AngularJS
@@ -116,6 +135,46 @@ El valor del atributo para activar la opci&oacute;n ser&aacute; "true".
     <itv-grid itv-grid-url="https://api.mongolab.com/api/1/databases/itvempresa/collections/empleados/" itv-grid-id="_id.$oid"
         itv-grid-param-name="apiKey" itv-grid-param-value="A_a5oitaREIT2wisha3aweRA9J" itv-grid-strip-updateid="true">
 
+####itv-grid-allowcud
+Dado que en muchas ocasiones el grid se utilizar&aacute; para consumir datos de alguna API p&uacute;blica que permite la lectura pero no la edici&oacute;n o el borrado se ha introducido
+este par&aacute;metro para activar las funcionalidades de creaci&oacute;n, edici&oacute;n y borrado, si no se indica este atributo con valor "true" el grid ser&aacute; de solo lectura
+y no aparecer&aacute;n dichas opciones.
+
+            <itv-grid itv-grid-url="https://api.mongolab.com/api/1/databases/itvempresa/collections/empleados/"
+                      itv-grid-title="MongoLab Test" itv-grid-allowcud="true"
+                      itv-grid-columns="edad,nombre,apellido,direccion,ciudad"
+                      itv-grid-param-name="apiKey" itv-grid-param-value="o_YePtBXIXDJiG1MVpacLhhVpVNvDqcC"
+                      itv-grid-id="_id.$oid" itv-grid-strip-updateid="true"></itv-grid>
+
+####itv-grid-master-detail
+Para mostrar campos largos (por ejemplo descripciones, biograf&iacute;as, etc...) e im&aacute;genes el grid permite definir una serie de campos
+que se mostrar&aacute;n en una secci&oacute;n desplegable al hacer click en cada l&iacute;nea. Para configurar esta opci&oacute;n har&aacute; falta incluir este atributo con valor "true"
+as&iacute; como el atributo  **itv-grid-detail-cols** que funciona de manera similar al atributo descrito anteriormente itv-grid-columns pero indicando las propiedades que aparecer&aacute;n
+en esta secci&oacute;n.
+
+            <itv-grid itv-grid-url="https://api.mongolab.com/api/1/databases/itvempresa/collections/empleados/"
+                      itv-grid-title="MongoLab Test" itv-grid-allowcud="true"
+                      itv-grid-columns="edad,nombre,apellido,direccion,ciudad"
+                      itv-grid-param-name="apiKey" itv-grid-param-value="o_YePtBXIXDJiG1MVpacLhhVpVNvDqcC"
+                      itv-grid-id="_id.$oid" itv-grid-strip-updateid="true" itv-grid-master-detail="true"
+                      itv-grid-detail-cols="salario,email,telefono,departamento,contratacion"></itv-grid>
+
+Si alguna de las propiedades definidas en itv-grid-detail-cols contiene la url de una im&aacute;gen, la directiva que crea la secci&oacute;n de detalle ser&aacute; capaz de cargarla y mostrarla
+a la izquierda de la secci&oacute;n junto con el resto de campos.
+
+####itv-subgrid
+Para activar la funcionalidad de grid hijo es necesario utilizar este atributo con valor "true" aunque ser&aacute; necesario el uso de otros atributos para su correcta configuraci&oacute;n.
+Ser&aacute; obligatorio el atributo **itv-subgrid-path** para componer la url del subgrid, si por ejemplo se parte de una url "/itvRestServer/rest/titulacion/" y cada titulaci&oacute;n
+tiene una lista de asignaturas consultable a trav&eacute;s de la url "/itvRestServer/rest/titulacion/{id_titulacion}/asignatura" el valor del atributo ser&iacute;a itv-subgrid-path="asignatura".
+
+Para indicar las columnas a mostrar en el subgrid se utilizar&aacute; el atributo **itv-subgrid-columns**.
+
+           <itv-grid itv-grid-url="http://localhost:8080/itvRestServer/rest/titulacion/"
+                      itv-grid-title="Carreras" itv-grid-allowcud="false"
+                      itv-grid-columns="nombre,plan,creditos,cursos,centro,categoria" itv-subgrid="true"
+                      itv-subgrid-path="asignatura"
+                      itv-subgrid-columns="nombre,creditos,tipo,cuatrimestre,curso"></itv-grid>
+
 
 ##Servicio de Datos
 Si se integra el componente en una aplicaci&oacute;n desarrollada en [AngularJS](http://angularjs.org/) es posible utilizar algunas opciones de configuraci&oacute;n
@@ -175,6 +234,44 @@ lo cual permite, por ejemplo, eliminar el campo definido como id antes de enviar
 
 Esta es la funci&oacute;n usada cuando el atributo itv-grid-strip-updateid de la directiva tiene valor "true".
 
+####setDataExtractor
+Esta funci&oacute;n permite recuperar el array de resultados a mostrar cuando la respuesta del servidor no es directamente dicho array, si por ejemplo la
+estructura devuelta es un objeto con distintas propiedades y dentro de ese objeto hay otro en una propiedad "data" dentro del cual a su vez se encuentra
+el array de resultados en una propiedad "results" ser&iacute;a necesario la siguiente funci&oacute;n:
 
+    var dataExtractor = function(data){
+        return data.data.results;
+    };
+    DataResourceProvider.setDataExtractor(dataExtractor);
 
+####setResponseTransformer
+Esta funci&oacute;n se aplicar&aacute; a cada uno de los elementos del array de resultados y permite manipularlos obteniendo solo los campos utilizados en el grid.
+Tambi&eacute;n permite obtener datos que puedan estar anidados dentro de objetos y concatenarlos, por ejemplo si dentro del elemento hay una propiedad imagen que es
+un objeto con las propiedades url y extension, se podr&iacute;a sacar ese objeto, concatenar sus propiedades para obtener la url de la imagen y almacenarlo en una nueva
+propiedad del objeto devuelto por la funci&oacute;n. El siguiente c&oacute;digo se utiliza en uno de los ejemplo posteriores:
+
+    var responseTransformer = function(data){
+        if(_.has(data, 'isbn')){
+            var responseElement = {};
+            responseElement.id = data.id;
+            responseElement.titulo = data.title;
+            var txtObj = data.textObjects[0];
+            if(!_.isUndefined(txtObj)){
+                responseElement.sinopsis = data.textObjects[0].text;
+            } else {
+                responseElement.sinopsis = 'Sinopsis no encontrada';
+            }
+            responseElement.paginas = data.pageCount;
+            responseElement.serie = data.series.name;
+            responseElement.fecha = data.dates[0].date.substr(0, 10);
+            responseElement.precio = data.prices[0].price;
+
+            var portada = data.thumbnail.path;
+            responseElement.portada = portada + '/portrait_fantastic.' + data.thumbnail.extension;
+            return responseElement;
+        } else {
+            return data;
+        }
+    };
+    DataResourceProvider.setResponseTransformer(responseTransformer);
 

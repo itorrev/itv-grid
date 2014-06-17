@@ -111,7 +111,13 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                     scope.subgridInitObj['itv-grid-strip-updateid'] = attrs.itvGridStripUpdateid;
                 }
             }
+            if(attrs.itvGridMultiquery === 'true'){
+                specificConfigDataService.multi = true;
 
+                if(scope.createsubgrid){
+                    scope.subgridInitObj['itv-grid-multiquery'] = attrs.itvGridMultiquery;
+                }
+            }
             var dataResourceInstance = UtilsService.getSpecificDataService(specificConfigDataService);
 
             scope.notEditableFields.push(dataResourceInstance.getIdField());
@@ -311,7 +317,7 @@ itvGridModule.directive('itvDetail', function($compile){
                 var html = '';
                 angular.forEach(scope.names, function(value, key){
                     if(checkImg(scope.row[value])){
-                        imgHtml = '<img src="' + scope.row[value] + '" style="float: left; padding-right: 15px;">';
+                        imgHtml = '<img src="' + scope.row[value] + '" style="float: left; padding-right: 25px;">';
                     } else {
                         if(html.length == 0){
                             html = '<ul>';
@@ -328,13 +334,9 @@ itvGridModule.directive('itvDetail', function($compile){
                     html = imgHtml + html + '<div style="clear: both;"></div>'
                 }
 
-                console.log(html);
                 var compiledHtml = $compile(html)(scope);
                 element.html(compiledHtml);
             }
-
-            checkImg('http://img1.wikia.nocookie.net/__cb20100415081430/fma/images/5/58/Human_Transmutation_Circle.png');
         }
-
     }
 });
