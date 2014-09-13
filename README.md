@@ -1,4 +1,7 @@
 #itv-grid
+
+https://github.com/itorrev/itv-grid/blob/master/itv-grid.jpg
+
 ##Introducci&oacute;n
 itv-grid es un grid de datos desarrollado en [AngularJS](http://angularjs.org/) que permite la lectura, creaci&oacute;n, edici&oacute;n y borrado de elementos de una base de datos a trav&eacute;s de un API REST.
 
