@@ -319,5 +319,9 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
         }
     };
 
+    UtilsService.isNumber = function(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    };
+
     return UtilsService;
 });

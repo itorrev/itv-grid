@@ -8,10 +8,10 @@
                 <th ng-if="multiselection" class="checkColumn"></th>
                 <th ng-repeat="header in headers" ng-click="setOrderBy(header.name)" class="headerStyle itvFade" ng-hide="header.isHidden">
                     {{ header.name | capitalize}}
-                    <i ng-class="{'fa-sort-asc': orderBy.asc, 'fa-sort-desc': !orderBy.asc}" ng-show="orderBy.headerName == header.name" class="fa rightFloater"></i>
+                    <i ng-class="{'fa-sort-up': orderBy.asc, 'fa-sort-down': !orderBy.asc}" ng-show="orderBy.headerName == header.name" class="fa rightFloater"></i>
                     <i class="fa fa-sort rightFloater" ng-show="orderBy.headerName != header.name"></i>
                 </th>
-                <th class="col-xs-1" itv-message="table.header.action" ng-if="allowCUD"></th>
+                <th class="col-xs-1" style="width: 85px;" itv-message="table.header.action" ng-if="allowCUD"></th>
             </tr>
             </thead>
             <tbody>

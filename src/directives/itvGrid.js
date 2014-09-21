@@ -161,11 +161,13 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 if(!scope.advancedFilterActive && !angular.isUndefined(scope.filteredData)){
                     var filterParams = filterText;
                     if(filterParams){
-                        filterParams = UtilsService.createCustomFilterFunction(filterText, scope.headers);
+                        filterParams =
+                            UtilsService.createCustomFilterFunction(filterText, scope.headers);
                     }
                     scope.filteredData = UtilsService.filterData(filterParams, scope.data);
                     scope.itemsTotales = scope.filteredData.length;
-                    scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
+                    scope.firstLastTotalObj =
+                        UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
                 }
             });
 
@@ -192,6 +194,12 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.updateData = function(editedResource){
+                // se convierte en número si originalmente el valor era un número
+                angular.forEach(scope.originalEditingRow, function(value, key){
+                    if(angular.isNumber(value) && UtilsService.isNumber(editedResource[key])){
+                        editedResource[key] = parseFloat(editedResource[key]);
+                    }
+                });
                 $log.log('Actualizando id: ' + editedResource.$id());
                 editedResource.$update().then(function(resource){
                     scope.reloadData();
@@ -199,6 +207,12 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.insertData = function(){
+                // si es un número se inserta como número
+                angular.forEach(scope.data[0], function(value, key){
+                    if(angular.isNumber(value) && UtilsService.isNumber(scope.insertRow[key])){
+                        scope.insertRow[key] = parseFloat(scope.insertRow[key]);
+                    }
+                });
                 dataResourceInstance.save(scope.insertRow).then(function(){
                     scope.insertRow = {};
                     scope.insertMode = false;

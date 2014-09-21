@@ -142,8 +142,9 @@ panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
             scope.toggleSelectionView = function(){
                 scope.selectionView = !scope.selectionView;
                 if(scope.selectionView){
+                    scope.clearAdvancedFilter();
                     scope.storedItemsTotales = scope.itemsTotales;
-                        scope.itemsTotales = scope.selectedRows.length;
+                    scope.itemsTotales = scope.selectedRows.length;
                     scope.cambioPagina(1);
                 } else {
                     scope.itemsTotales = scope.storedItemsTotales;

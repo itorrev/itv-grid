@@ -315,7 +315,7 @@ dataResourceModule.provider('DataResource', function(){
                                     multiquery();
                                 }
                             }, function(response){
-                                console.log('boooolardoooo');
+                                console.log('Error en multiquery');
                                 console.log(JSON.stringify(response));
                             });
                     };

@@ -108,13 +108,13 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    {{ header.name | capitalize}}\r" +
     "\n" +
-    "                    <i ng-class=\"{'fa-sort-asc': orderBy.asc, 'fa-sort-desc': !orderBy.asc}\" ng-show=\"orderBy.headerName == header.name\" class=\"fa rightFloater\"></i>\r" +
+    "                    <i ng-class=\"{'fa-sort-up': orderBy.asc, 'fa-sort-down': !orderBy.asc}\" ng-show=\"orderBy.headerName == header.name\" class=\"fa rightFloater\"></i>\r" +
     "\n" +
     "                    <i class=\"fa fa-sort rightFloater\" ng-show=\"orderBy.headerName != header.name\"></i>\r" +
     "\n" +
     "                </th>\r" +
     "\n" +
-    "                <th class=\"col-xs-1\" itv-message=\"table.header.action\" ng-if=\"allowCUD\"></th>\r" +
+    "                <th class=\"col-xs-1\" style=\"width: 85px;\" itv-message=\"table.header.action\" ng-if=\"allowCUD\"></th>\r" +
     "\n" +
     "            </tr>\r" +
     "\n" +

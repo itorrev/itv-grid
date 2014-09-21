@@ -161,11 +161,13 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
                 if(!scope.advancedFilterActive && !angular.isUndefined(scope.filteredData)){
                     var filterParams = filterText;
                     if(filterParams){
-                        filterParams = UtilsService.createCustomFilterFunction(filterText, scope.headers);
+                        filterParams =
+                            UtilsService.createCustomFilterFunction(filterText, scope.headers);
                     }
                     scope.filteredData = UtilsService.filterData(filterParams, scope.data);
                     scope.itemsTotales = scope.filteredData.length;
-                    scope.firstLastTotalObj = UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
+                    scope.firstLastTotalObj =
+                        UtilsService.getFirstLastTotalObject(scope.pagina , scope.itemsTotales, scope.itemsPorPagina);
                 }
             });
 
@@ -192,6 +194,12 @@ itvGridModule.directive('itvGrid', function(DataResource, $log, UtilsService){
             };
 
             scope.updateData = function(editedResource){
+                // se convierte en número si originalmente el valor era un número
+                angular.forEach(scope.originalEditingRow, function(value, key){
+                    if(angular.isNumber(value) && UtilsService.isNumber(editedResource[key])){
+                        editedResource[key] = parseFloat(editedResource[key]);
+                    }
+                });
                 $log.log('Actualizando id: ' + editedResource.$id());
                 editedResource.$update().then(function(resource){
                     scope.reloadData();
@@ -737,8 +745,9 @@ panelDirectivesModule.directive('itvPanelbody', function($modal, UtilsService){
             scope.toggleSelectionView = function(){
                 scope.selectionView = !scope.selectionView;
                 if(scope.selectionView){
+                    scope.clearAdvancedFilter();
                     scope.storedItemsTotales = scope.itemsTotales;
-                        scope.itemsTotales = scope.selectedRows.length;
+                    scope.itemsTotales = scope.selectedRows.length;
                     scope.cambioPagina(1);
                 } else {
                     scope.itemsTotales = scope.storedItemsTotales;
@@ -1922,6 +1931,10 @@ utilsServiceModule.factory('UtilsService', function(filterFilter, DataResource){
         }
     };
 
+    UtilsService.isNumber = function(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    };
+
     return UtilsService;
 });
 
@@ -2152,13 +2165,13 @@ angular.module('itvGrid').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    {{ header.name | capitalize}}\r" +
     "\n" +
-    "                    <i ng-class=\"{'fa-sort-asc': orderBy.asc, 'fa-sort-desc': !orderBy.asc}\" ng-show=\"orderBy.headerName == header.name\" class=\"fa rightFloater\"></i>\r" +
+    "                    <i ng-class=\"{'fa-sort-up': orderBy.asc, 'fa-sort-down': !orderBy.asc}\" ng-show=\"orderBy.headerName == header.name\" class=\"fa rightFloater\"></i>\r" +
     "\n" +
     "                    <i class=\"fa fa-sort rightFloater\" ng-show=\"orderBy.headerName != header.name\"></i>\r" +
     "\n" +
     "                </th>\r" +
     "\n" +
-    "                <th class=\"col-xs-1\" itv-message=\"table.header.action\" ng-if=\"allowCUD\"></th>\r" +
+    "                <th class=\"col-xs-1\" style=\"width: 85px;\" itv-message=\"table.header.action\" ng-if=\"allowCUD\"></th>\r" +
     "\n" +
     "            </tr>\r" +
     "\n" +
